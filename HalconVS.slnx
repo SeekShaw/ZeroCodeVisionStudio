@@ -1,0 +1,33 @@
+﻿<Solution>
+  <Folder Name="/CameraSdk/">
+    <Project Path="AAAandSphinx.Vision.SDK.Halcon/AAAandSphinx.Vision.SDK.Halcon.csproj" />
+    <Project Path="AAAandSphinx.Vision.SDK.HK/AAAandSphinx.Vision.SDK.HIK.csproj" />
+    <Project Path="AAAandSphinx.Vision.SDK/AAAandSphinx.Vision.SDK.csproj" />
+  </Folder>
+  <Folder Name="/VisionStudio/">
+    <Project Path="HalconVisionStudio.Core/HalconVisionStudio.Core.csproj" />
+    <Project Path="HalconVisionStudio.Shared/HalconVisionStudio.Shared.csproj" />
+    <Project Path="HalconVisionStudio.UI/HalconVisionStudio.UI.csproj" />
+    <Project Path="HalconVisionStudio.AI/HalconVisionStudio.AI.csproj" />
+    <Project Path="HalconVisionStudio/HalconVisionStudio.csproj" />
+  </Folder>
+  <Folder Name="/Demo/">
+    <Project Path="Demo.SDK.Halcon/Demo.SDK.Halcon.csproj" />
+    <Project Path="Demo.SDK.HIK/Demo.SDK.HIK.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/">
+    <Project Path="Plugins/ContourProcessing/Plugin.Handle.ContourProcessing.csproj" />
+    <Project Path="Plugins/DeviceCommunication/Plugin.Handle.DeviceCommunication.csproj" />
+    <Project Path="Plugins/Geometry/Plugin.Handle.Geometry.csproj" />
+    <Project Path="Plugins/GrayFeature/Plugin.Handle.GrayFeature.csproj" />
+    <Project Path="Plugins/ImageInput/Plugin.Handle.ImageInput.csproj" />
+    <Project Path="Plugins/Logic/Plugin.Handle.Logic/Plugin.Handle.Logic.csproj" />
+    <Project Path="Plugins/Measurement/Plugin.Handle.Measurement.csproj" />
+    <Project Path="Plugins/Preprocessing/Plugin.Handle.Preprocessing.csproj" />
+    <Project Path="Plugins/RegionProcessing/Plugin.Handle.RegionProcessing.csproj" />
+    <Project Path="Plugins/ResultOutput/Plugin.Handle.ResultOutput.csproj" />
+    <Project Path="Plugins/Segmentation/Plugin.Handle.Segmentation.csproj" />
+    <Project Path="Plugins/ShapeFeature/Plugin.Handle.ShapeFeature.csproj" />
+    <Project Path="Plugins/ShapeMatching/Plugin.Handle.ShapeMatching.csproj" />
+  </Folder>
+</Solution>

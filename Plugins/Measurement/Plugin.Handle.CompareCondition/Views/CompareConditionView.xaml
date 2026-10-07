@@ -1,0 +1,179 @@
+﻿<UserControl
+    x:Class="Plugin.Handle.CompareCondition.Views.CompareConditionView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shared="clr-namespace:HalconVisionStudio.Shared;assembly=HalconVisionStudio.Shared"
+    xmlns:viewModels="clr-namespace:Plugin.Handle.CompareCondition.ViewModels"
+    d:DataContext="{d:DesignInstance Type={x:Type viewModels:CompareConditionViewModel}}"
+    d:DesignHeight="600"
+    d:DesignWidth="760"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- 共享插件样式：按钮/输入框/文本/卡片，主题感知（DynamicResource Token.*） -->
+                <ResourceDictionary Source="pack://application:,,,/HalconVisionStudio.Shared;component/Themes/PluginDialogStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="18" Background="{DynamicResource Token.Surface.Background}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+                <TabControl Background="Transparent" Style="{StaticResource Plugin.TabControl}">
+            <TabItem Header="参数设置">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- 逻辑运算 -->
+                <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="180" />
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Style="{StaticResource Plugin.Label}" Text="逻辑运算" />
+                    <ComboBox
+                        Grid.Column="1"
+                        Style="{StaticResource Plugin.ComboBox}"
+                        ItemsSource="{Binding LogicOperators}"
+                        SelectedItem="{Binding Parameter.LogicOperator, Mode=TwoWay}" />
+                    <CheckBox
+                        Grid.Column="3"
+                        Style="{DynamicResource AppCheckBoxStyle}"
+                        Content="输出比较明细"
+                        IsChecked="{Binding Parameter.OutputDetailText, Mode=TwoWay}" />
+                </Grid>
+
+                <DockPanel Margin="0,0,0,10" LastChildFill="False">
+                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                        <Border Style="{StaticResource Plugin.Section}" />
+                        <TextBlock Style="{StaticResource Plugin.SectionTitle2}" Text="比较内容" />
+                    </StackPanel>
+                    <Button
+                        DockPanel.Dock="Right"
+                        Style="{StaticResource Plugin.Button.Primary}"
+                        Margin="10,0,0,0"
+                        Command="{Binding AddItemCommand}"
+                        Content="新增比较项" />
+                </DockPanel>
+
+                <ItemsControl ItemsSource="{Binding Parameter.Conditions}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="0,0,0,12"
+                                Style="{StaticResource Plugin.Card}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="88" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="90" />
+                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="90" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Style="{StaticResource Plugin.Label}" Text="名称" />
+                                    <TextBox
+                                        Grid.Column="1"
+                                        Style="{StaticResource Plugin.TextBox}"
+                                        Margin="0,0,10,0"
+                                        Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <CheckBox
+                                        Grid.Column="2"
+                                        Style="{DynamicResource AppCheckBoxStyle}"
+                                        Content="启用"
+                                        IsChecked="{Binding Enabled, Mode=TwoWay}" />
+                                    <Button
+                                        Grid.Column="4"
+                                        Style="{StaticResource Plugin.Button.DangerGhost}"
+                                        Height="30" Padding="10,0" MinWidth="0"
+                                        Command="{Binding DataContext.RemoveItemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"
+                                        Content="删除此项" />
+
+                                    <TextBlock Grid.Row="1" Margin="0,10,0,0" Style="{StaticResource Plugin.Label}" Text="比较类型" />
+                                    <ComboBox
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Style="{StaticResource Plugin.ComboBox}"
+                                        Margin="0,10,10,0"
+                                        ItemsSource="{Binding DataContext.CompareTypes, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        SelectedItem="{Binding CompareType, Mode=TwoWay}" />
+                                    <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,10,8,0" Style="{StaticResource Plugin.Label}" Text="取值类型" />
+                                    <ComboBox
+                                        Grid.Row="1"
+                                        Grid.Column="3"
+                                        Grid.ColumnSpan="2"
+                                        Style="{StaticResource Plugin.ComboBox}"
+                                        Margin="0,10,0,0"
+                                        ItemsSource="{Binding DataContext.ValueTypes, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        SelectedItem="{Binding ValueType, Mode=TwoWay}" />
+
+                                    <TextBlock Grid.Row="2" Margin="0,10,0,0" Style="{StaticResource Plugin.Label}" Text="右值来源" />
+                                    <ComboBox
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Style="{StaticResource Plugin.ComboBox}"
+                                        Margin="0,10,10,0"
+                                        ItemsSource="{Binding DataContext.RightValueModes, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        SelectedItem="{Binding RightValueMode, Mode=TwoWay}" />
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Margin="0,10,8,0" Style="{StaticResource Plugin.Label}" Text="固定右值" />
+                                    <TextBox
+                                        Grid.Row="2"
+                                        Grid.Column="3"
+                                        Grid.ColumnSpan="2"
+                                        Style="{StaticResource Plugin.TextBox}"
+                                        Margin="0,10,0,0"
+                                        Text="{Binding ReferenceValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+            </TabItem>
+            <TabItem Header="输入与参数绑定">
+                <shared:ParameterBindingSection />
+            </TabItem>
+        </TabControl>
+
+        <Border
+            Grid.Row="1"
+            Style="{DynamicResource ActionBarStyle}"
+            Margin="-18,14,-18,-18">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Style="{StaticResource Plugin.Button.Secondary}" Command="{Binding ResetCommand}" Content="恢复默认" />
+                    <Button Style="{StaticResource Plugin.Button.Primary}" Margin="8,0,0,0" Command="{Binding ExecuteCommand}" Content="执行" />
+                </StackPanel>
+                <ScrollViewer
+                    Grid.Column="0"
+                    Margin="0,0,16,0"
+                    MaxHeight="68"
+                    VerticalScrollBarVisibility="Auto">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Style="{StaticResource Plugin.Hint}"
+                        Text="{Binding Message}" />
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

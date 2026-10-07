@@ -1,0 +1,74 @@
+<UserControl
+    x:Class="HalconVisionStudio.Views.Components.MainCommandBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Focusable="False">
+    <Border
+        Padding="10,7"
+        Background="{DynamicResource MahApps.Brushes.Control.Background}"
+        BorderBrush="{DynamicResource MahApps.Brushes.Gray5}"
+        BorderThickness="0,0,0,1">
+        <DockPanel LastChildFill="True">
+            <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" Orientation="Horizontal">
+                <Button
+                    Command="{Binding HandleExecCommand}"
+                    Style="{StaticResource CommandBarButtonStyle}"
+                    ToolTip="仅执行当前选中的节点">
+                    <StackPanel Orientation="Horizontal">
+                        <Path
+                            Width="15"
+                            Height="15"
+                            Data="{StaticResource Icon.Execute}"
+                            Stroke="{DynamicResource MahApps.Brushes.Accent}"
+                            Style="{StaticResource ToolbarIconPathStyle}" />
+                        <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" Text="执行节点" />
+                    </StackPanel>
+                </Button>
+                <Button
+                    Command="{Binding StartProcessCommand}"
+                    Style="{StaticResource CommandBarPrimaryButtonStyle}"
+                    ToolTip="从头运行当前流程">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Width="12" Height="14" Data="{StaticResource Icon.Run}" Fill="White" Stretch="Uniform" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Text="运行流程" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <Button Command="{Binding NewSchemeCommand}" Style="{StaticResource CommandBarButtonStyle}" ToolTip="新建方案">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Width="15" Height="15" Data="{StaticResource Icon.New}" Style="{StaticResource ToolbarIconPathStyle}" />
+                        <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" Text="新建" />
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding OpenSchemeCommand}" Style="{StaticResource CommandBarButtonStyle}" ToolTip="打开方案">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Width="16" Height="15" Data="{StaticResource Icon.Open}" Style="{StaticResource ToolbarIconPathStyle}" />
+                        <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" Text="打开" />
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding SaveSchemeCommand}" Style="{StaticResource CommandBarButtonStyle}" ToolTip="保存当前方案">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Width="15" Height="15" Data="{StaticResource Icon.Save}" Style="{StaticResource ToolbarIconPathStyle}" />
+                        <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" Text="保存" />
+                    </StackPanel>
+                </Button>
+                <Separator Style="{StaticResource CommandBarSeparatorStyle}" />
+                <Button Command="{Binding ZoomOutCommand}" Style="{StaticResource CommandBarIconButtonStyle}" ToolTip="缩小流程画布">
+                    <Grid Width="16" Height="16">
+                        <Path Data="{StaticResource Icon.ZoomOut}" Style="{StaticResource ToolbarIconPathStyle}" />
+                    </Grid>
+                </Button>
+                <Button Command="{Binding ZoomResetCommand}" Style="{StaticResource CommandBarButtonStyle}" ToolTip="恢复 100% 缩放">
+                    <TextBlock VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Text="100%" />
+                </Button>
+                <Button Command="{Binding ZoomInCommand}" Style="{StaticResource CommandBarIconButtonStyle}" ToolTip="放大流程画布">
+                    <Grid Width="16" Height="16">
+                        <Path Data="{StaticResource Icon.ZoomIn}" Style="{StaticResource ToolbarIconPathStyle}" />
+                    </Grid>
+                </Button>
+            </StackPanel>
+        </DockPanel>
+    </Border>
+</UserControl>

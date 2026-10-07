@@ -1,0 +1,140 @@
+﻿<UserControl
+    x:Class="Plugin.Handle.DistanceMeasure.Views.DistanceContoursView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shared="clr-namespace:HalconVisionStudio.Shared;assembly=HalconVisionStudio.Shared"
+    xmlns:vm="clr-namespace:Plugin.Handle.DistanceMeasure.ViewModels"
+    d:DataContext="{d:DesignInstance Type={x:Type vm:DistanceContoursViewModel}}"
+    d:DesignHeight="600"
+    d:DesignWidth="920"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- 共享插件样式：按钮/输入框/文本/卡片，主题感知（DynamicResource Token.*） -->
+                <ResourceDictionary Source="pack://application:,,,/HalconVisionStudio.Shared;component/Themes/PluginDialogStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="{DynamicResource Token.Surface.Background}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="320" />
+            <ColumnDefinition Width="320" MinWidth="260" />
+        </Grid.ColumnDefinitions>
+
+        <!-- 左侧：图像与轮廓实时视窗 -->
+        <Border Grid.Column="0" Style="{StaticResource Plugin.PreviewHost}">
+            <ContentControl Content="{Binding HWindow}" />
+        </Border>
+
+        <!-- 右侧：参数设置与结果面板 -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+                        <TabControl Grid.Row="0" Background="Transparent" Style="{StaticResource Plugin.TabControl}">
+                <TabItem Header="参数设置">
+                    <ScrollViewer
+                Padding="16,14,14,10"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource Plugin.SectionTitle}" Text="轮廓间距离测量 (Distance Contours)" />
+
+                    <!-- 计算模式设置 -->
+                    <Border Margin="0,0,0,10" Style="{StaticResource Plugin.Card}">
+                        <StackPanel>
+                            <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                                <Border Style="{StaticResource Plugin.Section}" />
+                                <TextBlock Style="{StaticResource Plugin.SectionTitle2}" Text="算法模式" />
+                            </StackPanel>
+                            <Grid Style="{DynamicResource ParameterRowStyle}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource Plugin.Label}" Text="距离计算模式" />
+                                <ComboBox
+                                    Grid.Column="1"
+                                    Style="{StaticResource Plugin.ComboBox}"
+                                    ItemsSource="{Binding ModeList}"
+                                    SelectedItem="{Binding Parameter.Mode, Mode=TwoWay}" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 标定与单位 -->
+                    <Border Margin="0,0,0,10" Style="{StaticResource Plugin.Card}">
+                        <StackPanel>
+                            <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                                <Border Style="{StaticResource Plugin.Section}" />
+                                <TextBlock Style="{StaticResource Plugin.SectionTitle2}" Text="单位换算与标定" />
+                            </StackPanel>
+                            <Grid Style="{DynamicResource ParameterRowStyle}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource Plugin.Label}" Text="像素当量" />
+                                <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.CalibScale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                            <Grid Style="{DynamicResource ParameterRowStyle}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource Plugin.Label}" Text="显示单位" />
+                                <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.UnitName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 测量结果看板 -->
+                    <Border Margin="0,0,0,6" Style="{StaticResource Plugin.Card}">
+                        <StackPanel>
+                            <StackPanel Margin="0,0,0,6" Orientation="Horizontal">
+                                <Border Style="{StaticResource Plugin.Section}" />
+                                <TextBlock Style="{StaticResource Plugin.SectionTitle2}" Text="实测结果" />
+                            </StackPanel>
+                            <TextBlock
+                                Margin="0,2,0,0"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource Token.Primary}"
+                                Text="{Binding MeasureResultText}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+                </TabItem>
+                <TabItem Header="输入与参数绑定">
+                    <shared:ParameterBindingSection />
+                </TabItem>
+            </TabControl>
+
+            <!-- 底部操作栏 -->
+            <Border Grid.Row="1" Style="{DynamicResource ActionBarStyle}">
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button Command="{Binding ClearDrawCommand}" Content="清除绘制" Style="{StaticResource Plugin.Button.Secondary}" />
+                    <Button
+                        Margin="8,0,0,0"
+                        Command="{Binding ResetCommand}"
+                        Content="恢复默认"
+                        Style="{StaticResource Plugin.Button.Secondary}" />
+                    <Button
+                        Margin="8,0,0,0"
+                        Command="{Binding ExecuteCommand}"
+                        Content="执行预览"
+                        Style="{StaticResource Plugin.Button.Primary}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

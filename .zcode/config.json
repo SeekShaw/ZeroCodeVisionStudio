@@ -1,0 +1,12 @@
+{
+  "mcp": {
+    "servers": {
+      "halcon-visionstudio": {
+        "command": "python",
+        "args": [
+          "D:\\Code\\AAAandSphinx\\halcon-vison-studio\\halcon-mcp-bridge.py"
+        ]
+      }
+    }
+  }
+}

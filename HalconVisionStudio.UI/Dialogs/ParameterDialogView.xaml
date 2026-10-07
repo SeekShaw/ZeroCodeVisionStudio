@@ -1,0 +1,546 @@
+﻿<UserControl
+    x:Class="HalconVisionStudio.UI.Dialogs.ParameterDialogView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:HalconVisionStudio.Shared;assembly=HalconVisionStudio.Shared"
+    xmlns:shared="clr-namespace:HalconVisionStudio.Shared;assembly=HalconVisionStudio.Shared"
+    xmlns:mahs="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{d:DesignInstance Type={x:Type local:ParameterDialogViewModel}}"
+    d:DesignHeight="620"
+    d:DesignWidth="1000"
+    MinHeight="500"
+    MinWidth="760"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/HalconVisionStudio.Shared;component/Themes/PluginDialogStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- ============ 编辑器模板 ============ -->
+        <DataTemplate x:Key="TextEditorTemplate">
+            <TextBox
+                Style="{StaticResource AppTextBoxStyle}"
+                Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </DataTemplate>
+
+        <!-- 滑条 + 数值框编辑器：带 Range 特性的数值参数 -->
+        <DataTemplate x:Key="SliderEditorTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Slider
+                    Grid.Column="0"
+                    Minimum="{Binding RangeMinimum}"
+                    Maximum="{Binding RangeMaximum}"
+                    SmallChange="{Binding RangeStep}"
+                    LargeChange="{Binding RangeStep}"
+                    TickFrequency="{Binding RangeStep}"
+                    IsSnapToTickEnabled="True"
+                    IsMoveToPointEnabled="False"
+                    VerticalAlignment="Center"
+                    Value="{Binding Value, Mode=TwoWay}" />
+                <TextBox
+                    Grid.Column="1"
+                    Width="92"
+                    Margin="10,0,0,0"
+                    Padding="6,8"
+                    TextAlignment="Center"
+                    Style="{StaticResource AppTextBoxStyle}"
+                    Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock
+                    Grid.Column="2"
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    FontSize="11"
+                    Foreground="{DynamicResource MahApps.Brushes.Gray4}"
+                    Text="{Binding RangeHint}" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="BooleanEditorTemplate">
+            <CheckBox
+                Style="{StaticResource AppCheckBoxStyle}"
+                IsChecked="{Binding Value, Mode=TwoWay}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="EnumEditorTemplate">
+            <ComboBox
+                Style="{StaticResource AppComboBoxStyle}"
+                ItemsSource="{Binding Options}"
+                SelectedItem="{Binding Value, Mode=TwoWay}" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="FileOpenEditorTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    Grid.Column="0"
+                    Style="{StaticResource AppTextBoxStyle}"
+                    Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    Grid.Column="1"
+                    Style="{StaticResource BrowseButtonStyle}"
+                    Command="{Binding DataContext.BrowseFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding}"
+                    Content="浏览..." />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="FileSaveEditorTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    Grid.Column="0"
+                    Style="{StaticResource AppTextBoxStyle}"
+                    Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button
+                    Grid.Column="1"
+                    Style="{StaticResource BrowseButtonStyle}"
+                    Command="{Binding DataContext.SaveFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding}"
+                    Content="浏览..." />
+            </Grid>
+        </DataTemplate>
+
+        <!-- 通讯驱动下拉选择：候选项来自驱动中心（DriverOptionsAttribute 过滤类型） -->
+        <DataTemplate x:Key="DriverSelectEditorTemplate">
+            <StackPanel>
+                <ComboBox
+                    Style="{StaticResource AppComboBoxStyle}"
+                    ItemsSource="{Binding Options}"
+                    SelectedItem="{Binding Value, Mode=TwoWay}" />
+                <TextBlock
+                    Margin="2,6,0,0"
+                    FontSize="11"
+                    TextWrapping="Wrap"
+                    Foreground="{DynamicResource Token.Status.Danger}"
+                    Text="列表为空：请先到「工具 → 通讯驱动管理」创建对应类型的驱动">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Options.Length}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+        </DataTemplate>
+
+        <!-- 全局流程变量名：可编辑下拉（候选为现有变量，允许输入新名） -->
+        <DataTemplate x:Key="VariableNameEditorTemplate">
+            <ComboBox
+                IsEditable="True"
+                StaysOpenOnEdit="True"
+                Style="{StaticResource AppComboBoxStyle}"
+                ItemsSource="{Binding Options}"
+                Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </DataTemplate>
+
+        <!-- 按编辑器类型选择模板 -->
+        <Style x:Key="EditorSelectorStyle" TargetType="ContentControl">
+            <Setter Property="ContentTemplate" Value="{StaticResource TextEditorTemplate}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding EditorKind}" Value="{x:Static local:ParameterEditorKind.Slider}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource SliderEditorTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding EditorKind}" Value="{x:Static local:ParameterEditorKind.Boolean}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource BooleanEditorTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding EditorKind}" Value="{x:Static local:ParameterEditorKind.Enum}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource EnumEditorTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding EditorKind}" Value="{x:Static local:ParameterEditorKind.FileOpen}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource FileOpenEditorTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding EditorKind}" Value="{x:Static local:ParameterEditorKind.FileSave}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource FileSaveEditorTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding EditorKind}" Value="{x:Static local:ParameterEditorKind.DriverSelect}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource DriverSelectEditorTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding EditorKind}" Value="{x:Static local:ParameterEditorKind.VariableName}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource VariableNameEditorTemplate}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 参数行：悬停高亮 + 底部分隔线 -->
+        <Style x:Key="ParameterRowStyle" TargetType="Border">
+            <Setter Property="Padding" Value="0,10" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Gray8}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray10}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 参数标签列 -->
+        <Style x:Key="ParameterLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray3}" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="0,9,12,0" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+
+        <!-- 圆角小徽标（分类） -->
+        <Style x:Key="ChipStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
+            <Setter Property="Opacity" Value="0.14" />
+            <Setter Property="CornerRadius" Value="9" />
+            <Setter Property="Padding" Value="10,3" />
+        </Style>
+        <Style x:Key="ChipTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="400" />
+            <ColumnDefinition Width="360" MinWidth="330" MaxWidth="440" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ==================== 顶部：算子标题栏 ==================== -->
+        <Border
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Padding="16,10"
+            Background="{DynamicResource MahApps.Brushes.Control.Background}"
+            BorderBrush="{DynamicResource MahApps.Brushes.Gray8}"
+            BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- 图标（与工具箱一致） -->
+                <Border
+                    Grid.Column="0"
+                    Width="34"
+                    Height="34"
+                    Margin="0,0,12,0"
+                    CornerRadius="8"
+                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                    Opacity="0.9">
+                    <Path
+                        Width="18"
+                        Height="18"
+                        Margin="4"
+                        Data="{Binding OperatorIcon}"
+                        Stretch="Uniform"
+                        Stroke="White"
+                        StrokeThickness="1.2" />
+                </Border>
+
+                <TextBlock
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    FontSize="15"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                    Text="{Binding DialogTitle}" />
+
+                <!-- 分类徽标 -->
+                <Border Grid.Column="2" Margin="12,0,0,0" Style="{StaticResource ChipStyle}" VerticalAlignment="Center"
+                        Visibility="{Binding CategoryText, Converter={StaticResource StringToVisibilityConverter}}">
+                    <TextBlock Style="{StaticResource ChipTextStyle}" Text="{Binding CategoryText}" />
+                </Border>
+
+                <TextBlock Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Right"
+                           FontSize="11" Foreground="{DynamicResource MahApps.Brushes.Gray4}">
+                    <Run Text="{Binding ParameterCount, Mode=OneWay}" />
+                    <Run Text=" 项参数" />
+                </TextBlock>
+            </Grid>
+        </Border>
+
+        <!-- ==================== 左侧：图像预览区 ==================== -->
+        <Grid Grid.Row="1" Grid.Column="0" Background="{DynamicResource MahApps.Brushes.ThemeBackground}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- HALCON 预览窗口 -->
+            <ContentControl Grid.Row="0" ClipToBounds="True" Content="{Binding HWindow}" />
+
+            <!-- 底部浮动状态条：执行结果/引导文本 -->
+            <Border
+                Grid.Row="1"
+                Margin="12"
+                Padding="12,8"
+                Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                BorderBrush="{DynamicResource MahApps.Brushes.Gray7}"
+                BorderThickness="1"
+                CornerRadius="6"
+                MaxHeight="88"
+                Visibility="{Binding Message, Converter={StaticResource StringToVisibilityConverter}}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Orientation="Horizontal">
+                        <Path VerticalAlignment="Top" Width="13" Height="13" Data="{StaticResource Icon.Bulb}" Style="{StaticResource ToolbarIconPathStyle}" />
+                        <TextBlock
+                            Margin="8,0,0,0"
+                            FontSize="12"
+                            Foreground="{DynamicResource MahApps.Brushes.Gray3}"
+                            Text="{Binding Message}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <!-- ==================== 右侧：参数面板 ==================== -->
+        <Border
+            Grid.Row="1"
+            Grid.Column="1"
+            Background="{DynamicResource MahApps.Brushes.Control.Background}"
+            BorderBrush="{DynamicResource MahApps.Brushes.Gray8}"
+            BorderThickness="1,0,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- 校验错误横幅：存在错误时禁止关闭，顶部醒目提示 -->
+                <Border
+                    Grid.Row="0"
+                    Margin="12,6,12,4"
+                    Padding="10,7"
+                    Background="{DynamicResource MahApps.Brushes.Highlight}"
+                    CornerRadius="6"
+                    Visibility="{Binding HasValidationErrors, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock
+                        FontSize="11.5"
+                        Foreground="White"
+                        Text="存在未通过的参数校验，请修正标红的参数后再关闭窗口。"
+                        TextWrapping="Wrap" />
+                </Border>
+
+                <!-- 参数列表 -->
+                <TabControl Grid.Row="1" Background="Transparent" Style="{StaticResource Plugin.TabControl}">
+                    <TabItem Header="参数设置">
+                        <ScrollViewer
+                    Grid.Row="2"
+                    Padding="12,4,8,12"
+                    VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Disabled">
+                    <Grid>
+                        <!-- 空状态提示：无参数时居中引导 -->
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ParameterCount}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackPanel Margin="0,48,0,0" HorizontalAlignment="Center">
+                                <Path HorizontalAlignment="Center" Width="34" Height="34" Data="{StaticResource Icon.Sliders}" Style="{StaticResource ToolbarIconPathStyle}" Opacity="0.55" />
+                                <TextBlock
+                                    Margin="0,10,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="12.5"
+                                    Foreground="{DynamicResource MahApps.Brushes.Gray3}"
+                                    Text="此算子无可编辑参数" />
+                                <TextBlock
+                                    Margin="0,4,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="11.5"
+                                    Foreground="{DynamicResource MahApps.Brushes.Gray4}"
+                                    Text="点击下方「执行预览」查看处理结果" />
+                            </StackPanel>
+                        </Border>
+
+                        <ItemsControl ItemsSource="{Binding Properties}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource ParameterRowStyle}">
+                                        <Grid Margin="4,0,4,0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- 参数名（悬停显示说明） -->
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Grid.Column="0"
+                                                Style="{StaticResource ParameterLabelStyle}"
+                                                Text="{Binding Name}"
+                                                ToolTip="{Binding Description}" />
+
+                                            <!-- 编辑器 -->
+                                            <ContentControl
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                Content="{Binding}"
+                                                Style="{StaticResource EditorSelectorStyle}" />
+
+                                            <!-- 参数行内绑定图标（VM 式直接入口）：
+                                                 三态显示当前绑定源，点击弹候选菜单绑定/解绑 -->
+                                            <Button
+                                                Grid.Row="0"
+                                                Grid.Column="1"
+                                                Width="22"
+                                                Height="22"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Margin="0,0,-2,0"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                Focusable="False"
+                                                Command="{Binding DataContext.ParamBindCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTipService.ShowDuration="10000">
+                                                <Button.ToolTip>
+                                                    <ToolTip>
+                                                        <TextBlock>
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Setter Property="Text" Value="绑定参数：点击选择数据源（上游输出/变量）" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding HasBinding}" Value="True">
+                                                                            <Setter Property="Text" Value="{Binding BindingSourceText, StringFormat=当前绑定：{0}（点击更改）}" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </ToolTip>
+                                                </Button.ToolTip>
+                                                <Path
+                                                    Width="13"
+                                                    Height="13"
+                                                    Data="{StaticResource Icon.Link}"
+                                                    Stretch="Uniform"
+                                                    StrokeThickness="1.5"
+                                                    StrokeLineJoin="Round"
+                                                    StrokeStartLineCap="Round"
+                                                    StrokeEndLineCap="Round">
+                                                    <Path.Style>
+                                                        <Style TargetType="Path">
+                                                            <Setter Property="Stroke" Value="{DynamicResource MahApps.Brushes.Gray7}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding HasBinding}" Value="True">
+                                                                    <Setter Property="Stroke" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                                                </DataTrigger>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Stroke" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Path.Style>
+                                                </Path>
+                                            </Button>
+
+                                            <!-- 行内错误提示 -->
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Grid.Column="1"
+                                                Margin="0,4,0,0"
+                                                FontSize="11"
+                                                Foreground="{DynamicResource Theme.Vision.Status.Failed}"
+                                                Text="{Binding ErrorMessage}"
+                                                TextWrapping="Wrap"
+                                                Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </Grid>
+                </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="输入与参数绑定">
+                        <shared:ParameterBindingSection x:Name="BindingHost" />
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Border>
+
+        <!-- ==================== 底部：操作栏 ==================== -->
+        <Border
+            Grid.Row="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Padding="16,12"
+            Background="{DynamicResource MahApps.Brushes.Control.Background}"
+            BorderBrush="{DynamicResource MahApps.Brushes.Gray8}"
+            BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Button
+                    Grid.Column="0"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Command="{Binding ResetCommand}"
+                    Content="恢复默认" />
+
+                <Button
+                    Grid.Column="2"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Command="{Binding ExecuteCommand}"
+                    Content="执行预览" />
+
+                <Button
+                    Grid.Column="3"
+                    Margin="8,0,0,0"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Command="{Binding CloseCommand}"
+                    Content="关闭" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

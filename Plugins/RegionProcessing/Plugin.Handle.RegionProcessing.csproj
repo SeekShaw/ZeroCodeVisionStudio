@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Plugin.Handle.RegionProcessing</AssemblyName>
+    <RootNamespace>Plugin.Handle.RegionProcessing</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Prism.Core" Version="9.0.537" />
+    <PackageReference Include="Prism.Wpf" Version="9.0.537" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\HalconVisionStudio.Core\HalconVisionStudio.Core.csproj" />
+    <ProjectReference Include="..\..\HalconVisionStudio.Shared\HalconVisionStudio.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="halcondotnet">
+      <HintPath>..\..\libs\halcondotnet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

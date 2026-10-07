@@ -1,0 +1,125 @@
+﻿<UserControl
+    x:Class="Plugin.Handle.DefectMeasure.Views.DefectMeasureView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shared="clr-namespace:HalconVisionStudio.Shared;assembly=HalconVisionStudio.Shared"
+    xmlns:vm="clr-namespace:Plugin.Handle.DefectMeasure.ViewModels"
+    d:DataContext="{d:DesignInstance Type={x:Type vm:DefectMeasureViewModel}}"
+    d:DesignHeight="520"
+    d:DesignWidth="880"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- 共享插件样式：按钮/输入框/文本/卡片，主题感知（DynamicResource Token.*） -->
+                <ResourceDictionary Source="pack://application:,,,/HalconVisionStudio.Shared;component/Themes/PluginDialogStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="{DynamicResource Token.Surface.Background}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="320" />
+            <ColumnDefinition Width="290" MinWidth="240" />
+        </Grid.ColumnDefinitions>
+
+        <!-- 左侧：图像与缺陷区域预览 -->
+        <Border Grid.Column="0" Style="{StaticResource Plugin.PreviewHost}">
+            <ContentControl Content="{Binding HWindow}" />
+        </Border>
+
+        <!-- 右侧：参数设置 + 操作 -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- 参数编辑区 -->
+                        <TabControl Grid.Row="0" Background="Transparent" Style="{StaticResource Plugin.TabControl}">
+                <TabItem Header="参数设置">
+                    <ScrollViewer
+                Padding="16,14,14,10"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource Plugin.SectionTitle}" Text="缺陷测量判定 (Defect Measure)" />
+
+                    <!-- 规格与门限 -->
+                    <Border Margin="0,0,0,10" Style="{StaticResource Plugin.Card}">
+                        <StackPanel>
+                            <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                                <Border Style="{StaticResource Plugin.Section}" />
+                                <TextBlock Style="{StaticResource Plugin.SectionTitle2}" Text="缺陷允收公差" />
+                            </StackPanel>
+                            <Grid Style="{DynamicResource ParameterRowStyle}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource Plugin.Label}" Text="最大允许数量" />
+                                <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.AllowedMaxCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+
+                            <Grid Style="{DynamicResource ParameterRowStyle}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource Plugin.Label}" Text="最大总面积(px)" />
+                                <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.AllowedMaxTotalArea, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+
+                            <Grid Style="{DynamicResource ParameterRowStyle}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Style="{StaticResource Plugin.Label}" Text="最小面积过滤(px)" />
+                                <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.MinAreaFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 说明与提示卡片 -->
+                    <Border Margin="0,0,0,10" Style="{StaticResource Plugin.Card}">
+                        <StackPanel>
+                            <StackPanel Margin="0,0,0,6" Orientation="Horizontal">
+                                <Border Style="{StaticResource Plugin.Section}" />
+                                <TextBlock Style="{StaticResource Plugin.SectionTitle2}" Text="判定规则说明" />
+                            </StackPanel>
+                            <TextBlock
+                                Style="{StaticResource Plugin.Hint}"
+                                Text="• 当缺陷连通域数量超过「最大允许数量」时判定为 NG；&#x0a;• 当过滤后缺陷总面积超过「最大总面积」时判定为 NG；&#x0a;• 满足条件时判定为 OK。" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+                </TabItem>
+                <TabItem Header="输入与参数绑定">
+                    <shared:ParameterBindingSection />
+                </TabItem>
+            </TabControl>
+
+            <!-- 操作栏 -->
+            <Border Grid.Row="1" Style="{DynamicResource ActionBarStyle}">
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button Command="{Binding ClearDrawCommand}" Content="清除绘制" Style="{StaticResource Plugin.Button.Secondary}" />
+                    <Button
+                        Margin="8,0,0,0"
+                        Command="{Binding ResetCommand}"
+                        Content="恢复默认"
+                        Style="{StaticResource Plugin.Button.Secondary}" />
+                    <Button
+                        Margin="8,0,0,0"
+                        Command="{Binding ExecuteCommand}"
+                        Content="执行预览"
+                        Style="{StaticResource Plugin.Button.Primary}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

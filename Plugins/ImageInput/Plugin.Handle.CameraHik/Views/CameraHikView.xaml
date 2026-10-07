@@ -1,0 +1,233 @@
+﻿<UserControl
+    x:Class="Plugin.Handle.CameraHik.Views.CameraHikView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shared="clr-namespace:HalconVisionStudio.Shared;assembly=HalconVisionStudio.Shared"
+    xmlns:viewmodels="clr-namespace:Plugin.Handle.CameraHik.ViewModels"
+    d:DataContext="{d:DesignInstance Type={x:Type viewmodels:CameraHikViewModel}}"
+    d:DesignHeight="600"
+    d:DesignWidth="900"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- 共享插件样式：按钮/输入框/文本/卡片，主题感知（DynamicResource Token.*） -->
+                <ResourceDictionary Source="pack://application:,,,/HalconVisionStudio.Shared;component/Themes/PluginDialogStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- 语义色别名：基于共享样式，跟随明暗主题 -->
+            <Style x:Key="BtnPrimary" TargetType="Button" BasedOn="{StaticResource Plugin.Button.Primary}"/>
+            <Style x:Key="BtnSecondary" TargetType="Button" BasedOn="{StaticResource Plugin.Button.Secondary}"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="12" Background="{DynamicResource Token.Surface.Background}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- 主内容区 -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="4" />
+                <ColumnDefinition Width="320" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 左侧：图像显示区域 -->
+            <Border
+                Grid.Column="0"
+                Style="{StaticResource Plugin.PreviewHost}"
+                Background="{DynamicResource Theme.Vision.Viewport.Background}">
+                <Grid>
+                    <Image Source="{Binding CameraImage}" Stretch="Uniform" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="13"
+                        Foreground="{DynamicResource Token.Text.Secondary}"
+                        Text="请打开相机并点击「采图预览」获取图像">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HasImage}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
+            <GridSplitter
+                Grid.Column="1"
+                Width="4"
+                HorizontalAlignment="Stretch"
+                Background="{DynamicResource Token.Border.Subtle}" />
+
+            <!-- 右侧：控制面板 -->
+            <TabControl
+                Grid.Column="2"
+                Background="Transparent"
+                Style="{StaticResource Plugin.TabControl}">
+                <TabItem Header="参数设置">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="0,8,0,0">
+                    <!-- 相机选择 -->
+                    <Border Style="{StaticResource Plugin.Card}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <Border Style="{StaticResource Plugin.Section}" />
+                                <TextBlock Style="{StaticResource Plugin.SectionTitle2}" Text="相机选择" />
+                            </StackPanel>
+
+                            <Button
+                                Content="枚举相机"
+                                Command="{Binding EnumerateCameraCommand}"
+                                Style="{StaticResource BtnSecondary}"
+                                Height="32"
+                                Margin="0,0,0,8" />
+
+                            <ComboBox
+                                Margin="0,0,0,8"
+                                ItemsSource="{Binding AvailableCameras}"
+                                SelectedItem="{Binding SelectedCameraSN}"
+                                IsSynchronizedWithCurrentItem="True"
+                                Style="{StaticResource Plugin.ComboBox}"
+                                Height="32" />
+
+                            <StackPanel Orientation="Horizontal" Height="32">
+                                <Button
+                                    Width="130"
+                                    Command="{Binding OpenCameraCommand}"
+                                    Content="打开相机"
+                                    Style="{StaticResource BtnPrimary}" />
+                                <Button
+                                    Width="130"
+                                    Margin="8,0,0,0"
+                                    Command="{Binding CloseCameraCommand}"
+                                    Content="关闭相机"
+                                    Style="{StaticResource BtnSecondary}" />
+                            </StackPanel>
+
+                            <TextBlock
+                                Style="{StaticResource Plugin.Hint}"
+                                Margin="0,8,0,0"
+                                Text="{Binding CameraStatus}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 触发设置 -->
+                    <Border Style="{StaticResource Plugin.Card}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <Border Style="{StaticResource Plugin.Section}" />
+                                <TextBlock Style="{StaticResource Plugin.SectionTitle2}" Text="触发设置" />
+                            </StackPanel>
+
+                            <TextBlock Style="{StaticResource Plugin.Label}" Margin="0,0,0,4" Text="触发模式" />
+                            <ComboBox
+                                Margin="0,0,0,8"
+                                ItemsSource="{x:Static viewmodels:CameraHikViewModel.TriggerModeValues}"
+                                SelectedItem="{Binding TriggerMode}"
+                                Style="{StaticResource Plugin.ComboBox}"
+                                Height="32" />
+
+                            <TextBlock Style="{StaticResource Plugin.Label}" Margin="0,0,0,4" Text="触发源" />
+                            <ComboBox
+                                Margin="0,0,0,0"
+                                ItemsSource="{x:Static viewmodels:CameraHikViewModel.TriggerSourceValues}"
+                                SelectedItem="{Binding TriggerSource}"
+                                Style="{StaticResource Plugin.ComboBox}"
+                                Height="32" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 相机参数 -->
+                    <Border Style="{StaticResource Plugin.Card}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <Border Style="{StaticResource Plugin.Section}" />
+                                <TextBlock Style="{StaticResource Plugin.SectionTitle2}" Text="相机参数" />
+                            </StackPanel>
+
+                            <TextBlock Style="{StaticResource Plugin.Label}" Margin="0,0,0,4" Text="曝光时间 (μs)" />
+                            <TextBox
+                                Margin="0,0,0,8"
+                                Text="{Binding ExposureTime, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource Plugin.TextBox}"
+                                Height="32" />
+
+                            <TextBlock Style="{StaticResource Plugin.Label}" Margin="0,0,0,4" Text="增益 (dB)" />
+                            <TextBox
+                                Margin="0,0,0,8"
+                                Text="{Binding Gain, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource Plugin.TextBox}"
+                                Height="32" />
+
+                            <TextBlock Style="{StaticResource Plugin.Label}" Margin="0,0,0,4" Text="触发延迟 (μs)" />
+                            <TextBox
+                                Margin="0,0,0,8"
+                                Text="{Binding TriggerDelay, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource Plugin.TextBox}"
+                                Height="32" />
+
+                            <Button
+                                Content="应用参数"
+                                Command="{Binding ApplyParamsCommand}"
+                                Style="{StaticResource BtnSecondary}"
+                                Height="32"
+                                Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 采图预览 -->
+                    <Button
+                        Content="采图预览"
+                        Command="{Binding CaptureCommand}"
+                        Style="{StaticResource BtnPrimary}"
+                        Height="36"
+                        FontSize="12" />
+                </StackPanel>
+            </ScrollViewer>
+                </TabItem>
+                <TabItem Header="输入与参数绑定">
+                    <shared:ParameterBindingSection />
+                </TabItem>
+            </TabControl>
+        </Grid>
+
+        <!-- 底部操作按钮区 -->
+        <Border
+            Grid.Row="1"
+            Height="1"
+            Margin="0,12,0,12"
+            Background="{DynamicResource Token.Border.Subtle}" />
+
+        <StackPanel
+            Grid.Row="1"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal"
+            Margin="0,0,0,0">
+            <Button
+                Width="80"
+                Height="36"
+                Content="重置"
+                Command="{Binding ResetCommand}"
+                Style="{StaticResource BtnSecondary}" />
+            <Button
+                Width="80"
+                Height="36"
+                Margin="8,0,0,0"
+                Content="执行"
+                Command="{Binding ExecuteCommand}"
+                Style="{StaticResource BtnPrimary}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

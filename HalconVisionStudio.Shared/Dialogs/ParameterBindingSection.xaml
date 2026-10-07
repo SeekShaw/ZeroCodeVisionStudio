@@ -1,0 +1,85 @@
+﻿<UserControl
+    x:Class="HalconVisionStudio.Shared.ParameterBindingSection"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mahs="http://metro.mahapps.com/winfx/xaml/controls">
+
+    <Border
+        Margin="6"
+        Padding="10,8"
+        Background="{DynamicResource MahApps.Brushes.Gray10}"
+        BorderBrush="{DynamicResource MahApps.Brushes.Gray6}"
+        BorderThickness="1"
+        CornerRadius="6">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- 标题行 -->
+            <DockPanel Grid.Row="0" Margin="0,0,0,6">
+                <TextBlock
+                    DockPanel.Dock="Left"
+                    FontSize="13"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                    Margin="0,0,10,0"
+                    Text="输入与参数绑定" />
+                <TextBlock
+                    FontSize="10.5"
+                    Foreground="{DynamicResource MahApps.Brushes.Gray6}"
+                    VerticalAlignment="Center"
+                    Text="数据槽：连线会自动建立默认绑定，未绑定的输入槽没有数据；参数：已绑定时每轮用绑定值覆盖参数页的值，未绑定才使用「参数设置」页的值。同一目标只有一个绑定源，后选覆盖先选。" />
+            </DockPanel>
+
+            <!-- 行列表（内部滚动，限高防挤压算子视图） -->
+            <ScrollViewer
+                Grid.Row="1"
+                VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="RowsHost">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Margin="0,0,0,5"
+                                Padding="10,6"
+                                Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+                                CornerRadius="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" MaxWidth="180" />
+                                        <ColumnDefinition Width="*" MinWidth="100" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel
+                                        Grid.Column="0"
+                                        Margin="0,0,10,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                            Margin="0,0,0,2"
+                                            Text="{Binding DisplayName}"
+                                            TextTrimming="CharacterEllipsis"
+                                            ToolTip="{Binding Description}" />
+                                        <TextBlock
+                                            FontSize="10.5"
+                                            Foreground="{DynamicResource MahApps.Brushes.Gray7}"
+                                            Margin="0"
+                                            Text="{Binding CurrentSourceText, StringFormat=当前：{0}}"
+                                            TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                    <ComboBox
+                                        Grid.Column="1"
+                                        DisplayMemberPath="Display"
+                                        ItemsSource="{Binding Candidates}"
+                                        SelectedItem="{Binding SelectedCandidate, Mode=TwoWay}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Border>
+</UserControl>

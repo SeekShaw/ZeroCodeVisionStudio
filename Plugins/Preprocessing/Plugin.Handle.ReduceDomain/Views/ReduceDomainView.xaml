@@ -1,0 +1,167 @@
+﻿<UserControl
+    x:Class="Plugin.Handle.ReduceDomain.Views.ReduceDomainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Plugin.Handle.ReduceDomain"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shared="clr-namespace:HalconVisionStudio.Shared;assembly=HalconVisionStudio.Shared"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:vm="clr-namespace:Plugin.Handle.ReduceDomain.ViewModels"
+    d:DataContext="{d:DesignInstance Type={x:Type vm:ReduceDomainViewModel}}"
+    d:DesignHeight="560"
+    d:DesignWidth="900"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- 共享插件样式：按钮/输入框/文本卡片，主题感知（DynamicResource Token.*） -->
+                <ResourceDictionary Source="pack://application:,,,/HalconVisionStudio.Shared;component/Themes/PluginDialogStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <ObjectDataProvider x:Key="ShapeTypeProvider" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type Type="{x:Type shared:EShapeType}" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="280" />
+            <ColumnDefinition Width="280" MinWidth="240" />
+        </Grid.ColumnDefinitions>
+
+        <!-- 左侧：图像预览 -->
+        <Border
+            Grid.Column="0"
+            Style="{StaticResource Plugin.PreviewHost}"
+            Background="{DynamicResource Theme.Vision.Viewport.Background}">
+            <ContentControl Content="{Binding HWindow}" />
+        </Border>
+
+        <!-- 右侧：参数设置 + 操作 -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+                        <TabControl Grid.Row="0" Background="Transparent" Style="{StaticResource Plugin.TabControl}">
+                <TabItem Header="参数设置">
+                    <ScrollViewer Padding="16,16,12,0" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Border Style="{StaticResource Plugin.Section}" />
+                        <TextBlock Style="{StaticResource Plugin.SectionTitle2}" Text="参数设置" />
+                    </StackPanel>
+                    <Border Style="{StaticResource Plugin.Card}">
+                        <StackPanel>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource Plugin.Label}" Text="形状类型" />
+                            <ComboBox Grid.Column="1" Style="{StaticResource Plugin.ComboBox}" ItemsSource="{Binding Source={StaticResource ShapeTypeProvider}}" SelectedItem="{Binding Parameter.ShapeType, Mode=TwoWay}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource Plugin.Label}" Text="Row1" />
+                            <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.Row1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource Plugin.Label}" Text="Column1" />
+                            <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.Column1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource Plugin.Label}" Text="Row2" />
+                            <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.Row2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource Plugin.Label}" Text="Column2" />
+                            <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.Column2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource Plugin.Label}" Text="Row (圆心)" />
+                            <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.Row, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource Plugin.Label}" Text="Column (圆心)" />
+                            <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.Column, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource Plugin.Label}" Text="Phi (旋转角)" />
+                            <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.Phi, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource Plugin.Label}" Text="Length1" />
+                            <TextBox Grid.Column="1" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.Length1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource Plugin.Label}" Text="Length2 / 半径" />
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <TextBox Width="72" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.Length2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBox Width="72" Margin="8,0,0,0" Style="{StaticResource Plugin.TextBox}" Text="{Binding Parameter.Radius, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+                </TabItem>
+                <TabItem Header="输入与参数绑定">
+                    <shared:ParameterBindingSection />
+                </TabItem>
+            </TabControl>
+
+            <Border
+                Grid.Row="1"
+                Background="{DynamicResource Theme.Vision.ActionBar.Background}"
+                BorderBrush="{DynamicResource Theme.Vision.Border}"
+                BorderThickness="0,1,0,0"
+                Padding="16,10">
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button Width="72" Height="30" Style="{StaticResource Plugin.Button.Secondary}" Command="{Binding ResetCommand}" Content="重置" />
+                    <Button Width="84" Height="30" Margin="8,0,0,0" Style="{StaticResource Plugin.Button.Primary}" Command="{Binding ExecuteCommand}" Content="执行" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

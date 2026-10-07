@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Plugin.Handle.ImageInput</AssemblyName>
+    <RootNamespace>Plugin.Handle.ImageInput</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Prism.Core" Version="9.0.537" />
+    <PackageReference Include="Prism.Wpf" Version="9.0.537" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AAAandSphinx.Vision.SDK.HK\AAAandSphinx.Vision.SDK.HIK.csproj" />
+    <ProjectReference Include="..\..\HalconVisionStudio.Core\HalconVisionStudio.Core.csproj" />
+    <ProjectReference Include="..\..\HalconVisionStudio.Shared\HalconVisionStudio.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MvCameraControl.Net">
+      <HintPath>..\..\AAAandSphinx.Vision.SDK.HK\libs\MvCameraControl.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="halcondotnet">
+      <HintPath>..\..\libs\halcondotnet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!--
+    .NET 10 SDK 缺陷规避（dotnet/sdk#51173）：
+    WPF 目标（net10.0-windows）进行标记编译（wpftmp）时，WindowsDesktop 共享框架的修剪会移除
+    System.Drawing.Common / System.Private.Windows.GdiPlus 引用，导致使用 System.Drawing 类型时报
+    CS0012（IImage 定义在未引用的程序集 System.Private.Windows.GdiPlus 中）。
+    此处从目标包目录显式补回这两个引用。
+  -->
+  <Target Name="AddSystemDrawingReferences" AfterTargets="ResolveTargetingPackAssets">
+    <ItemGroup>
+      <Reference Condition="'%(Reference.FileName)' == 'PresentationCore'"
+                 Include="%(Reference.RootDir)%(Reference.Directory)System.Drawing.Common.dll;%(Reference.RootDir)%(Reference.Directory)System.Private.Windows.GdiPlus.dll" />
+    </ItemGroup>
+  </Target>
+
+</Project>

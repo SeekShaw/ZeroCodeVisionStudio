@@ -1,0 +1,32 @@
+MIT License
+
+Copyright (c) 2026 AAAandSphinx
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+附加声明：
+
+1. 本项目调用 Halcon（MVTec Software GmbH）机器视觉库，Halcon 运行时与
+   授权需使用者自行向 MVTec 或其代理商获取，本项目不包含也不分发 Halcon。
+2. 本项目引用的第三方开源库（Prism、MahApps.Metro、MQTTnet、S7netplus 等）
+   遵循各自的原有开源协议。
+3. 欢迎学习、研究与基于本项目的二次开发；商用请自行评估 Halcon 授权与
+   第三方依赖的合规性。
