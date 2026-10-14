@@ -1,9 +1,9 @@
-using HalconVisionStudio.Shared;
+﻿using ZeroCodeVisionStudio.Shared;
 using HalconDotNet;
 
 namespace Plugin.Handle.GenEmptyRegion
 {
-    [Handle("生成空区域", "GenEmptyRegion", "生成一个空区域，通常作为区域拼接的初始容器。", Common.HandleType_Geometry)]
+    [Handle("生成空区域", "GenEmptyRegion", "生成一个空区域，通常作为区域拼接的初始容器。", Common.HandleType_Geometry, OperatorBackend = OperatorBackend.OpenCV)]
     public class GenEmptyRegionHandle : HandleBase
     {
         public GenEmptyRegionHandle(IDialogService dialogService) : base(dialogService)

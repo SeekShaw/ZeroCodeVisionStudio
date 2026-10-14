@@ -1,4 +1,4 @@
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.ContourMeasure.ViewModels
 {

@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.FindScaledShapeModel
 {
-    [Handle("查找缩放形状模板", "FindScaledShapeModel", "在当前图像中查找支持等比例缩放的形状模板实例。", Common.HandleType_ShapeMatching)]
+    [Handle("查找缩放形状模板", "FindScaledShapeModel", "在当前图像中查找支持等比例缩放的形状模板实例。", Common.HandleType_ShapeMatching, OperatorBackend = OperatorBackend.Halcon)]
     public class FindScaledShapeModelHandle : ParameterHandleBase<FindScaledShapeModelParameter>, IHandleDataSlots
     {
         public FindScaledShapeModelHandle(IDialogService dialogService) : base(dialogService)

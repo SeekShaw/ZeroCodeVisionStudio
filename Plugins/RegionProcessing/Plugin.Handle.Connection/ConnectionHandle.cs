@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Connection
 {
-    [Handle("连通域", "Connection", "将区域拆分为独立连通的候选区域。", Common.HandleType_RegionProcessing)]
+    [Handle("连通域", "Connection", "将区域拆分为独立连通的候选区域。", Common.HandleType_RegionProcessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class ConnectionHandle : HandleBase, IHandleDataSlots
     {
         public ConnectionHandle(IDialogService dialogService) : base(dialogService)

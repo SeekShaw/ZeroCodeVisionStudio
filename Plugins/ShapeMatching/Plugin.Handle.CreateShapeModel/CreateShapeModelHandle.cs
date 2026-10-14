@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.CreateShapeModel
 {
-    [Handle("创建形状模板", "CreateShapeModel", "基于当前图像创建 HALCON 形状模板，支持交互式模板区域。", Common.HandleType_ShapeMatching)]
+    [Handle("创建形状模板", "CreateShapeModel", "基于当前图像创建 HALCON 形状模板，支持交互式模板区域。", Common.HandleType_ShapeMatching, OperatorBackend = OperatorBackend.Halcon)]
     public class CreateShapeModelHandle : ParameterHandleBase<CreateShapeModelParameter>, IHandleDataSlots, IHandleRuntimeResourceOwner
     {
         private HTuple ownedModelId;

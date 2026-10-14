@@ -1,0 +1,57 @@
+<mahs:MetroWindow
+    x:Class="ZeroCodeVisionStudio.UI.Dialogs.MetroDialogWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ZeroCodeVisionStudio.UI.Dialogs"
+    xmlns:mahs="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="提示"
+    Width="940"
+    Height="620"
+    MinWidth="560"
+    MinHeight="360"
+    Background="{DynamicResource MahApps.Brushes.ThemeBackground}"
+    BorderBrush="{DynamicResource Theme.Vision.Border}"
+    BorderThickness="1"
+    FontFamily="Microsoft YaHei UI"
+    FontSize="13"
+    ResizeMode="CanResize"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <mahs:MetroWindow.Resources>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}" />
+        </Style>
+
+        <Style BasedOn="{StaticResource MahApps.Styles.TextBox}" TargetType="{x:Type TextBox}">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style BasedOn="{StaticResource MahApps.Styles.ComboBox}" TargetType="{x:Type ComboBox}">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="{x:Type Button}">
+            <Setter Property="MinWidth" Value="84" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Padding" Value="14,0" />
+        </Style>
+
+        <Style TargetType="{x:Type ListBox}">
+            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Theme.Vision.Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+    </mahs:MetroWindow.Resources>
+</mahs:MetroWindow>
+
+

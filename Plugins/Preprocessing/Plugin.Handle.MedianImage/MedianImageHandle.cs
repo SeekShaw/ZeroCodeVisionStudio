@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.MedianImage
 {
@@ -9,7 +9,7 @@ namespace Plugin.Handle.MedianImage
     /// 中值滤波算子处理器。
     /// 调用 HALCON 算子 <see cref="HOperatorSet.MedianImage"/> 对图像进行中值滤波。
     /// </summary>
-    [Handle("中值滤波", "MedianImage", "使用中值滤波抑制脉冲噪声。", Common.HandleType_Preprocessing)]
+    [Handle("中值滤波", "MedianImage", "使用中值滤波抑制脉冲噪声。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class MedianImageHandle : ParameterHandleBase<MedianImageParameter>, IHandleDataSlots
     {
         public MedianImageHandle(IDialogService dialogService) : base(dialogService)

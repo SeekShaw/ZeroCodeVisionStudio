@@ -9,12 +9,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\AAAandSphinx.Vision.SDK.HK\AAAandSphinx.Vision.SDK.HIK.csproj" />
+		<ProjectReference Include="..\ZeroCode.Vision.SDK.HK\ZeroCode.Vision.SDK.HIK.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Reference Include="halcondotnet">
-	    <HintPath>..\AAAandSphinx.Vision.SDK.Halcon\libs\halcondotnet.dll</HintPath>
+	    <HintPath>..\ZeroCode.Vision.SDK.Halcon\libs\halcondotnet.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 

@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.MeanImage
 {
@@ -9,7 +9,7 @@ namespace Plugin.Handle.MeanImage
     /// 均值滤波算子处理器。
     /// 调用 HALCON 算子 <see cref="HOperatorSet.MeanImage"/> 对图像进行均值滤波平滑处理。
     /// </summary>
-    [Handle("均值滤波", "MeanImage", "使用均值滤波平滑图像。", Common.HandleType_Preprocessing)]
+    [Handle("均值滤波", "MeanImage", "使用均值滤波平滑图像。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class MeanImageHandle : ParameterHandleBase<MeanImageParameter>, IHandleDataSlots
     {
         public MeanImageHandle(IDialogService dialogService) : base(dialogService)

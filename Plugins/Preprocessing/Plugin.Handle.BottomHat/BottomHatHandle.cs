@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.BottomHat
 {
-    [Handle("底帽变换", "BottomHat", "突出图像中的暗色细小结构。", Common.HandleType_Preprocessing)]
+    [Handle("底帽变换", "BottomHat", "突出图像中的暗色细小结构。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class BottomHatHandle : ParameterHandleBase<BottomHatParameter>, IHandleDataSlots
     {
         public BottomHatHandle(IDialogService dialogService) : base(dialogService)

@@ -1,5 +1,5 @@
-using System.ComponentModel;
-using HalconVisionStudio.Shared;
+﻿using System.ComponentModel;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Logic
 {
@@ -41,7 +41,7 @@ namespace Plugin.Handle.Logic
     /// 逻辑运算：把多路布尔判定（缺陷 OK/NG、尺寸合格、字符校验…）按 AND/OR/XOR/多数表决
     /// 合成为一个总判定，输出 Result 与各路明细。多工位合格判定的汇聚节点。
     /// </summary>
-    [Handle("逻辑运算", "LogicGate", "多路布尔输入做与/或/非/异或/多数表决，合成总判定（多工位合格判定汇聚用）。未绑定的输入可按 false 参与或忽略。", Common.HandleType_Logic)]
+    [Handle("逻辑运算", "LogicGate", "多路布尔输入做与/或/非/异或/多数表决，合成总判定（多工位合格判定汇聚用）。未绑定的输入可按 false 参与或忽略。", Common.HandleType_Logic, OperatorBackend = OperatorBackend.Hybrid)]
     public class LogicGateHandle : ParameterHandleBase<LogicGateParameter>, IHandleDataSlots
     {
         private const string InputA = "logic.in.a";

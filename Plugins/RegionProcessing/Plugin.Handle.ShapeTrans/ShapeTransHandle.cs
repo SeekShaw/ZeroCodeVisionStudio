@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.ShapeTrans
 {
-    [Handle("区域形状转换", "ShapeTrans", "将区域转换为凸包、矩形或圆形近似。", Common.HandleType_RegionProcessing)]
+    [Handle("区域形状转换", "ShapeTrans", "将区域转换为凸包、矩形或圆形近似。", Common.HandleType_RegionProcessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class ShapeTransHandle : ParameterHandleBase<ShapeTransParameter>, IHandleDataSlots
     {
         public ShapeTransHandle(IDialogService dialogService) : base(dialogService)

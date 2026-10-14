@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.GetShapeModelContours
 {
-    [Handle("获取模板轮廓", "GetShapeModelContours", "从形状模板 ID 获取 XLD 模板轮廓。", Common.HandleType_ShapeMatching)]
+    [Handle("获取模板轮廓", "GetShapeModelContours", "从形状模板 ID 获取 XLD 模板轮廓。", Common.HandleType_ShapeMatching, OperatorBackend = OperatorBackend.Halcon)]
     public class GetShapeModelContoursHandle : ParameterHandleBase<GetShapeModelContoursParameter>, IHandleDataSlots
     {
         public GetShapeModelContoursHandle(IDialogService dialogService) : base(dialogService)

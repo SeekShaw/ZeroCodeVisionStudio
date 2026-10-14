@@ -1,12 +1,12 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.ContourProcessing
 {
     /// <summary>
     /// 轮廓平滑算子。
     /// </summary>
-    [Handle("轮廓平滑", "SmoothContoursXld", "对XLD轮廓进行平滑处理。", "轮廓处理")]
+    [Handle("轮廓平滑", "SmoothContoursXld", "对XLD轮廓进行平滑处理。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class SmoothContoursXldHandle : ParameterHandleBase<SmoothContoursXldParameter>, IHandleDataSlots
     {
         public SmoothContoursXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -41,7 +41,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓分割算子。
     /// </summary>
-    [Handle("轮廓分割", "SegmentContoursXld", "将XLD轮廓分割为直线段、圆弧或椭圆弧。", "轮廓处理")]
+    [Handle("轮廓分割", "SegmentContoursXld", "将XLD轮廓分割为直线段、圆弧或椭圆弧。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class SegmentContoursXldHandle : ParameterHandleBase<SegmentContoursXldParameter>, IHandleDataSlots
     {
         public SegmentContoursXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -82,7 +82,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓选择算子。
     /// </summary>
-    [Handle("轮廓选择", "SelectContoursXld", "根据特征值筛选XLD轮廓。", "轮廓处理")]
+    [Handle("轮廓选择", "SelectContoursXld", "根据特征值筛选XLD轮廓。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class SelectContoursXldHandle : ParameterHandleBase<SelectContoursXldParameter>, IHandleDataSlots
     {
         public SelectContoursXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -127,7 +127,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓直线拟合算子。
     /// </summary>
-    [Handle("轮廓直线拟合", "FitLineContourXld", "对XLD轮廓进行直线拟合。", "轮廓处理")]
+    [Handle("轮廓直线拟合", "FitLineContourXld", "对XLD轮廓进行直线拟合。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class FitLineContourXldHandle : ParameterHandleBase<FitLineContourXldParameter>, IHandleDataSlots
     {
         public FitLineContourXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -192,7 +192,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓圆拟合算子。
     /// </summary>
-    [Handle("轮廓圆拟合", "FitCircleContourXld", "对XLD轮廓进行圆拟合。", "轮廓处理")]
+    [Handle("轮廓圆拟合", "FitCircleContourXld", "对XLD轮廓进行圆拟合。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class FitCircleContourXldHandle : ParameterHandleBase<FitCircleContourXldParameter>, IHandleDataSlots
     {
         public FitCircleContourXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -255,7 +255,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓椭圆拟合算子。
     /// </summary>
-    [Handle("轮廓椭圆拟合", "FitEllipseContourXld", "对XLD轮廓进行椭圆拟合。", "轮廓处理")]
+    [Handle("轮廓椭圆拟合", "FitEllipseContourXld", "对XLD轮廓进行椭圆拟合。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class FitEllipseContourXldHandle : ParameterHandleBase<FitEllipseContourXldParameter>, IHandleDataSlots
     {
         public FitEllipseContourXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -327,7 +327,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓相邻联合算子。
     /// </summary>
-    [Handle("轮廓联合", "UnionAdjacentContoursXld", "将相邻的XLD轮廓联合成一条轮廓。", "轮廓处理")]
+    [Handle("轮廓联合", "UnionAdjacentContoursXld", "将相邻的XLD轮廓联合成一条轮廓。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class UnionAdjacentContoursXldHandle : ParameterHandleBase<UnionAdjacentContoursXldParameter>, IHandleDataSlots
     {
         public UnionAdjacentContoursXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -367,7 +367,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓闭合算子。
     /// </summary>
-    [Handle("轮廓闭合", "CloseContoursXld", "闭合开放的XLD轮廓。", "轮廓处理")]
+    [Handle("轮廓闭合", "CloseContoursXld", "闭合开放的XLD轮廓。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class CloseContoursXldHandle : ParameterHandleBase<CloseContoursXldParameter>, IHandleDataSlots
     {
         public CloseContoursXldHandle(IDialogService dialogService) : base(dialogService) { }

@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <!-- 直接输出到项目根目录，双击 ZeroCodeVisionStudio.exe 即可启动，
+         不再需要 PostBuild robocopy 拷贝（之前拷不到是因为 DLL 被锁）。
+         AppendTargetFrameworkToOutputPath=false 让输出路径扁平化不带子目录。 -->
+    <OutputPath>$(MSBuildProjectDirectory)\..\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AssemblyName>ZeroCodeVisionStudio</AssemblyName>
+    <RootNamespace>ZeroCodeVisionStudio</RootNamespace>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <WindowsIcon>app.ico</WindowsIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AAAandSphinx.MahApps.Metro" Version="3.0.0.2" />
+    <PackageReference Include="Prism.Unity" Version="9.0.537" />
+  </ItemGroup>
+
+  <ItemGroup> 
+    <ProjectReference Include="..\ZeroCodeVisionStudio.AI\ZeroCodeVisionStudio.AI.csproj" />
+    <ProjectReference Include="..\ZeroCodeVisionStudio.Core\ZeroCodeVisionStudio.Core.csproj" />
+    <ProjectReference Include="..\ZeroCodeVisionStudio.Shared\ZeroCodeVisionStudio.Shared.csproj" />
+    <ProjectReference Include="..\ZeroCodeVisionStudio.UI\ZeroCodeVisionStudio.UI.csproj" /> 
+    <ProjectReference Include="..\Plugins\ContourProcessing\Plugin.Handle.ContourProcessing.csproj" />
+    <ProjectReference Include="..\Plugins\DeviceCommunication\Plugin.Handle.DeviceCommunication.csproj" />
+    <ProjectReference Include="..\Plugins\Geometry\Plugin.Handle.Geometry.csproj" />
+    <ProjectReference Include="..\Plugins\GrayFeature\Plugin.Handle.GrayFeature.csproj" />
+    <ProjectReference Include="..\Plugins\ImageInput\Plugin.Handle.ImageInput.csproj" />
+    <ProjectReference Include="..\Plugins\Logic\Plugin.Handle.Logic\Plugin.Handle.Logic.csproj" />
+    <ProjectReference Include="..\Plugins\Measurement\Plugin.Handle.Measurement.csproj" />
+    <ProjectReference Include="..\Plugins\Preprocessing\Plugin.Handle.Preprocessing.csproj" />
+    <ProjectReference Include="..\Plugins\RegionProcessing\Plugin.Handle.RegionProcessing.csproj" />
+    <ProjectReference Include="..\Plugins\ResultOutput\Plugin.Handle.ResultOutput.csproj" />
+    <ProjectReference Include="..\Plugins\Segmentation\Plugin.Handle.Segmentation.csproj" />
+    <ProjectReference Include="..\Plugins\ShapeFeature\Plugin.Handle.ShapeFeature.csproj" />
+    <ProjectReference Include="..\Plugins\ShapeMatching\Plugin.Handle.ShapeMatching.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="halcondotnet">
+      <HintPath>..\libs\halcondotnet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- MCP stdio 桥接脚本随程序发布，供 Claude Code / Cursor 等外部 MCP 客户端挂载。 -->
+  <ItemGroup>
+    <None Include="..\halcon-mcp-bridge.py" Link="halcon-mcp-bridge.py" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- 提示：build 完成后如需把 EXE/DLL 拷到根目录，运行：
+       robocopy "ZeroCodeVisionStudio\bin\Debug\net10.0-windows" "." /E /NFL /NDL /NJH /NJS /NP -->
+</Project>

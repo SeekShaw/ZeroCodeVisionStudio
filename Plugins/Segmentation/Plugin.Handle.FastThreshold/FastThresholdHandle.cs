@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.FastThreshold
 {
-    [Handle("快速阈值分割", "FastThreshold", "适用于大幅图像的快速灰度范围分割算子。", Common.HandleType_Segmentation)]
+    [Handle("快速阈值分割", "FastThreshold", "适用于大幅图像的快速灰度范围分割算子。", Common.HandleType_Segmentation, OperatorBackend = OperatorBackend.OpenCV)]
     public class FastThresholdHandle : ParameterHandleBase<FastThresholdParameter>, IHandleDataSlots
     {
         public FastThresholdHandle(IDialogService dialogService) : base(dialogService) { }

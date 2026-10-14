@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
-using HalconVisionStudio.Shared;
-using HalconVisionStudio.Shared.Communication;
+using ZeroCodeVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared.Communication;
 
 namespace Plugin.Handle.DeviceCommunication
 {
@@ -60,7 +60,7 @@ namespace Plugin.Handle.DeviceCommunication
     /// PLC 读取算子：通过通讯驱动中心的长连接 PLC 驱动（西门子 S7 / 三菱 MC / 欧姆龙 FINS）
     /// 读取位/字/双字/浮点值。输出 Value（原始类型）与 ValueText（字符串，供下游 $ValueText$ 插值）。
     /// </summary>
-    [Handle("PLC读取", "PlcRead", "通过通讯驱动中心的长连接 PLC 驱动（西门子 S7 / 三菱 MC / 欧姆龙 FINS）读取位/字/双字/浮点值。输出 Value 与 ValueText。", "设备通讯")]
+    [Handle("PLC读取", "PlcRead", "通过通讯驱动中心的长连接 PLC 驱动（西门子 S7 / 三菱 MC / 欧姆龙 FINS）读取位/字/双字/浮点值。输出 Value 与 ValueText。", "设备通讯", OperatorBackend = OperatorBackend.Hybrid)]
     public class PlcReadHandle : ParameterHandleBase<PlcReadParam>
     {
         public PlcReadHandle(IDialogService dialogService) : base(dialogService)

@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using HalconVisionStudio.Shared;
+﻿using System.Collections.Generic;
+using ZeroCodeVisionStudio.Shared;
 using HalconDotNet;
 
 namespace Plugin.Handle.RgbToGray
 {
-    [Handle("RGB转灰度", "RgbToGray", "将 RGB 图像转换为灰度图像。", Common.HandleType_Preprocessing)]
+    [Handle("RGB转灰度", "RgbToGray", "将 RGB 图像转换为灰度图像。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class RgbToGrayHandle : HandleBase, IHandleDataSlots
     {
         public RgbToGrayHandle(IDialogService dialogService) : base(dialogService)

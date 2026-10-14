@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
-using HalconVisionStudio.Shared;
-using HalconVisionStudio.Shared.Communication;
+using ZeroCodeVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared.Communication;
 
 namespace Plugin.Handle.DeviceCommunication
 {
@@ -77,7 +77,7 @@ namespace Plugin.Handle.DeviceCommunication
         }
     }
 
-    [Handle("通讯接收", "CommReceive", "通过通讯驱动中心配置的驱动（TCP/UDP/串口）接收数据，等待至超时。可配合输入绑定把接收数据传给下游或驱动参数。", "设备通讯")]
+    [Handle("通讯接收", "CommReceive", "通过通讯驱动中心配置的驱动（TCP/UDP/串口）接收数据，等待至超时。可配合输入绑定把接收数据传给下游或驱动参数。", "设备通讯", OperatorBackend = OperatorBackend.Hybrid)]
     public class CommReceiveHandle : ParameterHandleBase<CommReceiveParameter>
     {
         public CommReceiveHandle(IDialogService dialogService) : base(dialogService)

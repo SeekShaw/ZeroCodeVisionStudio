@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.OpeningRectangle
 {
-    [Handle("矩形开运算", "OpeningRectangle", "使用矩形结构元素对区域执行开运算。", Common.HandleType_RegionProcessing)]
+    [Handle("矩形开运算", "OpeningRectangle", "使用矩形结构元素对区域执行开运算。", Common.HandleType_RegionProcessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class OpeningRectangleHandle : ParameterHandleBase<OpeningRectangleParameter>, IHandleDataSlots
     {
         public OpeningRectangleHandle(IDialogService dialogService) : base(dialogService)

@@ -1,7 +1,7 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Net.Http;
 using System.Text;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.DeviceCommunication
 {
@@ -55,7 +55,7 @@ namespace Plugin.Handle.DeviceCommunication
         [Description("PUT")] PUT = 2
     }
 
-    [Handle("HTTP请求", "HttpRequest", "调用 HTTP 接口（GET/POST/PUT），对接 MES/企业系统。请求体支持 $Key$ 上游值插值；响应状态码与正文输出到 HTTP 状态/HTTP 响应。", "设备通讯")]
+    [Handle("HTTP请求", "HttpRequest", "调用 HTTP 接口（GET/POST/PUT），对接 MES/企业系统。请求体支持 $Key$ 上游值插值；响应状态码与正文输出到 HTTP 状态/HTTP 响应。", "设备通讯", OperatorBackend = OperatorBackend.Hybrid)]
     public class HttpHandle : ParameterHandleBase<HttpRequestParam>
     {
         public HttpHandle(IDialogService dialogService) : base(dialogService)

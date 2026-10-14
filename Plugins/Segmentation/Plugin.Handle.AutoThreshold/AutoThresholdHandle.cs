@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.AutoThreshold
 {
-    [Handle("自动阈值", "AutoThreshold", "根据灰度直方图自动完成图像分割。", Common.HandleType_Segmentation)]
+    [Handle("自动阈值", "AutoThreshold", "根据灰度直方图自动完成图像分割。", Common.HandleType_Segmentation, OperatorBackend = OperatorBackend.OpenCV)]
     public class AutoThresholdHandle : ParameterHandleBase<AutoThresholdParameter>, IHandleDataSlots
     {
         public AutoThresholdHandle(IDialogService dialogService) : base(dialogService)

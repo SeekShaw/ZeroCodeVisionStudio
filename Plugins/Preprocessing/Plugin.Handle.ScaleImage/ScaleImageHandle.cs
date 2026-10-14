@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.ScaleImage
 {
-    [Handle("灰度拉伸", "ScaleImage", "通过乘数和加数调整图像灰度值。", Common.HandleType_Preprocessing)]
+    [Handle("灰度拉伸", "ScaleImage", "通过乘数和加数调整图像灰度值。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class ScaleImageHandle : ParameterHandleBase<ScaleImageParameter>, IHandleDataSlots
     {
         public ScaleImageHandle(IDialogService dialogService) : base(dialogService)

@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.WriteShapeModel
 {
-    [Handle("保存形状模板", "WriteShapeModel", "将当前 HALCON 形状模板保存到磁盘。", Common.HandleType_ShapeMatching)]
+    [Handle("保存形状模板", "WriteShapeModel", "将当前 HALCON 形状模板保存到磁盘。", Common.HandleType_ShapeMatching, OperatorBackend = OperatorBackend.Halcon)]
     public class WriteShapeModelHandle : ParameterHandleBase<WriteShapeModelParameter>, IHandleDataSlots
     {
         public WriteShapeModelHandle(IDialogService dialogService) : base(dialogService)

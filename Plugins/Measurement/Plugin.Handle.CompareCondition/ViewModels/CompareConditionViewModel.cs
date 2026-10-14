@@ -1,6 +1,6 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.CompareCondition.ViewModels
 {

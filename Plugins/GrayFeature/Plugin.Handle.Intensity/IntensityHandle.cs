@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Intensity
 {
-    [Handle("平均灰度", "Intensity", "计算区域内的平均灰度值和标准差，支持期望灰度与容差评估。", Common.HandleType_GrayFeature)]
+    [Handle("平均灰度", "Intensity", "计算区域内的平均灰度值和标准差，支持期望灰度与容差评估。", Common.HandleType_GrayFeature, OperatorBackend = OperatorBackend.OpenCV)]
     public class IntensityHandle : ParameterHandleBase<IntensityParameter>, IHandleDataSlots
     {
         public IntensityHandle(IDialogService dialogService) : base(dialogService)

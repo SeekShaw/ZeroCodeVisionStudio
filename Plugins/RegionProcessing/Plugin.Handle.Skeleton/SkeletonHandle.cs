@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Skeleton
 {
-    [Handle("骨架提取", "Skeleton", "提取输入区域的骨架（中心轴线）。", Common.HandleType_RegionProcessing)]
+    [Handle("骨架提取", "Skeleton", "提取输入区域的骨架（中心轴线）。", Common.HandleType_RegionProcessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class SkeletonHandle : HandleBase, IHandleDataSlots
     {
         public SkeletonHandle(IDialogService dialogService) : base(dialogService)

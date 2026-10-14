@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.DistanceMeasure.ViewModels
 {

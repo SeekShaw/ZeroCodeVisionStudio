@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using Plugin.Handle.ShapeFeature.Views;
 
 namespace Plugin.Handle.ShapeFeature
@@ -71,7 +71,7 @@ namespace Plugin.Handle.ShapeFeature
     /// <summary>
     /// 矩形度测量算子。
     /// </summary>
-    [Handle("矩形度", "Rectangularity", "计算区域的矩形度，值越接近1越接近矩形。", Common.HandleType_Measurement)]
+    [Handle("矩形度", "Rectangularity", "计算区域的矩形度，值越接近1越接近矩形。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class RectangularityHandle : ShapeFeatureBase
     {
         public const string SlotKey = "Rectangularity";
@@ -103,7 +103,7 @@ namespace Plugin.Handle.ShapeFeature
     /// <summary>
     /// 圆度测量算子。
     /// </summary>
-    [Handle("圆度", "Circularity", "计算区域的圆度，值越接近1越接近圆形。", Common.HandleType_Measurement)]
+    [Handle("圆度", "Circularity", "计算区域的圆度，值越接近1越接近圆形。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class CircularityHandle : ShapeFeatureBase
     {
         public const string SlotKey = "Circularity";
@@ -135,7 +135,7 @@ namespace Plugin.Handle.ShapeFeature
     /// <summary>
     /// 紧凑度测量算子。
     /// </summary>
-    [Handle("紧凑度", "Compactness", "计算区域的紧凑度，值越小越紧凑。", Common.HandleType_Measurement)]
+    [Handle("紧凑度", "Compactness", "计算区域的紧凑度，值越小越紧凑。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class CompactnessHandle : ShapeFeatureBase
     {
         public const string SlotKey = "Compactness";
@@ -167,7 +167,7 @@ namespace Plugin.Handle.ShapeFeature
     /// <summary>
     /// 凸性测量算子。
     /// </summary>
-    [Handle("凸性", "Convexity", "计算区域的凸性，值越接近1越接近凸形状。", Common.HandleType_Measurement)]
+    [Handle("凸性", "Convexity", "计算区域的凸性，值越接近1越接近凸形状。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class ConvexityHandle : ShapeFeatureBase
     {
         public const string SlotKey = "Convexity";
@@ -199,7 +199,7 @@ namespace Plugin.Handle.ShapeFeature
     /// <summary>
     /// 伸长度测量算子。
     /// </summary>
-    [Handle("伸长度", "Elongation", "计算区域的伸长度，值越大越细长。", Common.HandleType_Measurement)]
+    [Handle("伸长度", "Elongation", "计算区域的伸长度，值越大越细长。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class ElongationHandle : ShapeFeatureBase
     {
         public const string SlotKey = "Elongation";
@@ -231,7 +231,7 @@ namespace Plugin.Handle.ShapeFeature
     /// <summary>
     /// 区域方向测量算子。
     /// </summary>
-    [Handle("区域方向", "Orientation", "计算区域的主轴方向（度）。", Common.HandleType_Measurement)]
+    [Handle("区域方向", "Orientation", "计算区域的主轴方向（度）。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class OrientationHandle : ShapeFeatureBase
     {
         public const string SlotKey = "Orientation";

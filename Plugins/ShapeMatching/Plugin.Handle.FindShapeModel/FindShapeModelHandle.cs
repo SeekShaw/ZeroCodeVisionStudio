@@ -1,9 +1,9 @@
-using HalconVisionStudio.Shared;
+﻿using ZeroCodeVisionStudio.Shared;
 using HalconDotNet;
 
 namespace Plugin.Handle.FindShapeModel
 {
-    [Handle("查找形状模板", "FindShapeModel", "在当前图像中查找 HALCON 形状模板实例。", Common.HandleType_ShapeMatching)]
+    [Handle("查找形状模板", "FindShapeModel", "在当前图像中查找 HALCON 形状模板实例。", Common.HandleType_ShapeMatching, OperatorBackend = OperatorBackend.Halcon)]
     public class FindShapeModelHandle : ParameterHandleBase<FindShapeModelParameter>, IHandleDataSlots
     {
         public FindShapeModelHandle(IDialogService dialogService) : base(dialogService)

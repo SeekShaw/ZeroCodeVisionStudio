@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using Plugin.Handle.DynThreshold.Views;
 
 namespace Plugin.Handle.DynThreshold
 {
-    [Handle("动态阈值", "DynThreshold", "通过动态阈值分割局部亮缺陷或暗缺陷。", Common.HandleType_Segmentation)]
+    [Handle("动态阈值", "DynThreshold", "通过动态阈值分割局部亮缺陷或暗缺陷。", Common.HandleType_Segmentation, OperatorBackend = OperatorBackend.OpenCV)]
     public class DynThresholdHandle : HandleBase, IHandleDataSlots
     {
         private readonly DynThresholdParameter parameter;

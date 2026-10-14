@@ -1,0 +1,787 @@
+<UserControl
+    x:Class="ZeroCodeVisionStudio.UI.Controls.WorkflowEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ZeroCodeVisionStudio.UI.Controls"
+    xmlns:mahs="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shared="clr-namespace:ZeroCodeVisionStudio.Shared;assembly=ZeroCodeVisionStudio.Shared"
+    xmlns:ui="clr-namespace:ZeroCodeVisionStudio.UI.Controls"
+    x:Name="Root"
+    d:DesignHeight="500"
+    d:DesignWidth="760"
+    Focusable="True"
+    KeyDown="WorkflowEditor_KeyDown"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <!-- 现代点阵网格：24px 间距的细点，底色/点色取自 Theme.Vision.Canvas.* 主题令牌（随明暗主题切换） -->
+        <DrawingBrush
+            x:Key="WorkflowGridBrush"
+            Stretch="None"
+            TileMode="Tile"
+            Viewport="0,0,24,24"
+            ViewportUnits="Absolute">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="{DynamicResource Theme.Vision.Canvas.Background}">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry Rect="0,0,24,24" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing Brush="{DynamicResource Theme.Vision.Canvas.GridDot}">
+                        <GeometryDrawing.Geometry>
+                            <GeometryGroup>
+                                <EllipseGeometry Center="12,12" RadiusX="1.2" RadiusY="1.2" />
+                            </GeometryGroup>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+        <Style x:Key="NodeInputComboStyle" TargetType="ComboBox">
+            <Setter Property="MinHeight" Value="24" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Padding" Value="6,2" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Gray5}" />
+        </Style>
+        <Style x:Key="NodeIconButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="24" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray2}" />
+            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Control.Background}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Gray5}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <DockPanel Margin="12,10,12,8">
+            <!-- 右侧工具组（DockPanel.Dock="Right" 倒序排列）：自动布局 + 缩放 + 撤销重做 -->
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- 撤销 / 重做 -->
+                <Button Command="{Binding RedoCommand, ElementName=Root}" Style="{StaticResource NodeIconButtonStyle}" ToolTip="重做 (Ctrl+Y)" Margin="2,0,0,0">
+                    <Path Width="12" Height="12" Data="{StaticResource Icon.Redo}" Style="{StaticResource ToolbarIconPathStyle}" />
+                </Button>
+                <Button Command="{Binding UndoCommand, ElementName=Root}" Style="{StaticResource NodeIconButtonStyle}" ToolTip="撤销 (Ctrl+Z)" Margin="0,0,8,0">
+                    <Path Width="12" Height="12" Data="{StaticResource Icon.Undo}" Style="{StaticResource ToolbarIconPathStyle}" />
+                </Button>
+                <!-- 缩放：缩小 / 100% / 放大  -->
+                <Button Command="{Binding ZoomOutCommand, ElementName=Root}" Style="{StaticResource NodeIconButtonStyle}" ToolTip="缩小流程画布" Margin="0,0,2,0">
+                    <Path Width="12" Height="12" Data="{StaticResource Icon.ZoomOut}" Style="{StaticResource ToolbarIconPathStyle}" />
+                </Button>
+                <Button Command="{Binding ZoomResetCommand, ElementName=Root}" Style="{StaticResource NodeIconButtonStyle}" ToolTip="恢复 100% 缩放" Margin="0,0,2,0">
+                    <Path Width="12" Height="12" Data="{StaticResource Icon.Home}" Style="{StaticResource ToolbarIconPathStyle}" />
+                </Button>
+                <Button Command="{Binding ZoomInCommand, ElementName=Root}" Style="{StaticResource NodeIconButtonStyle}" ToolTip="放大流程画布" Margin="0,0,8,0">
+                    <Path Width="12" Height="12" Data="{StaticResource Icon.ZoomIn}" Style="{StaticResource ToolbarIconPathStyle}" />
+                </Button>
+                <!-- 自动布局 -->
+                <Button
+                    Command="{Binding AutoLayoutCommand, ElementName=Root}"
+                    Style="{StaticResource CommandBarButtonStyle}"
+                    ToolTip="按连线拓扑自动排列节点：上游在左下游在右，同层垂直居中对齐"
+                    VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Width="15" Height="15" Data="{StaticResource Icon.Workflow}" Style="{StaticResource ToolbarIconPathStyle}" VerticalAlignment="Center" />
+                        <TextBlock Margin="6,0,0,0" VerticalAlignment="Center" Text="自动布局" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="15"
+                FontWeight="SemiBold"
+                Text="流程编辑" />
+            <TextBlock
+                Margin="10,2,0,0"
+                VerticalAlignment="Center"
+                FontSize="12"
+                Foreground="{DynamicResource MahApps.Brushes.Gray2}"
+                Text="拖入算子，拖动下方输出端到上方输入端建立连线" />
+        </DockPanel>
+        <ScrollViewer
+            x:Name="WorkflowScrollViewer"
+            Grid.Row="1"
+            Background="{DynamicResource Theme.Vision.Canvas.Background}"
+            HorizontalScrollBarVisibility="Auto"
+            PreviewMouseWheel="WorkflowScrollViewer_PreviewMouseWheel"
+            VerticalScrollBarVisibility="Auto">
+            <Canvas
+                x:Name="WorkflowCanvas"
+                MinWidth="2400"
+                MinHeight="1400"
+                AllowDrop="True"
+                Background="{StaticResource WorkflowGridBrush}"
+                DragOver="WorkflowCanvas_DragOver"
+                Drop="WorkflowCanvas_Drop"
+                MouseDown="WorkflowCanvas_MouseDown"
+                MouseUp="WorkflowCanvas_MouseUp"
+                MouseLeftButtonDown="WorkflowCanvas_MouseLeftButtonDown"
+                MouseLeftButtonUp="WorkflowCanvas_MouseLeftButtonUp"
+                MouseMove="WorkflowCanvas_MouseMove">
+                <Canvas.LayoutTransform>
+                    <ScaleTransform ScaleX="{Binding WorkflowScale, ElementName=Root}" ScaleY="{Binding WorkflowScale, ElementName=Root}" />
+                </Canvas.LayoutTransform>
+
+                <Grid>
+                    <ItemsControl
+                        x:Name="ConnectionsLayer"
+                        MinWidth="2400"
+                        MinHeight="1400"
+                        ItemsSource="{Binding Connections, ElementName=Root}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <!-- 命中层：加宽透明描边，方便点选/悬停/右键 -->
+                                    <Path
+                                        x:Name="ConnectionHitPath"
+                                        Cursor="Hand"
+                                        Data="{Binding RouteData}"
+                                        MouseLeftButtonDown="Connection_MouseLeftButtonDown"
+                                        Stroke="Transparent"
+                                        StrokeThickness="18"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        Tag="{Binding ElementName=Root}"
+                                        ToolTip="单击选中，Delete 删除">
+                                        <Path.ContextMenu>
+                                            <ContextMenu Opened="NodeContextMenu_Opened">
+                                                <MenuItem
+                                                    Command="{Binding PlacementTarget.Tag.DeleteConnectionCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                    CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                    Header="删除连线" />
+                                            </ContextMenu>
+                                        </Path.ContextMenu>
+                                    </Path>
+
+                                    <!-- 视觉层：贝塞尔主线，柔和发光投影 -->
+                                    <Path
+                                        IsHitTestVisible="False"
+                                        Data="{Binding RouteData}"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round">
+                                        <Path.Effect>
+                                            <DropShadowEffect BlurRadius="5" ShadowDepth="0" Opacity="0.25" Color="#64748B" />
+                                        </Path.Effect>
+                                        <Path.Style>
+                                            <Style TargetType="Path">
+                                                <Setter Property="Stroke" Value="{DynamicResource Theme.Vision.Connection.Line}" />
+                                                <Setter Property="StrokeThickness" Value="2.5" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=ConnectionHitPath}" Value="True">
+                                                        <Setter Property="Stroke" Value="{DynamicResource Theme.Vision.Connection.Selected}" />
+                                                        <Setter Property="StrokeThickness" Value="3.5" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="Stroke" Value="{DynamicResource Theme.Vision.Connection.Selected}" />
+                                                        <Setter Property="StrokeThickness" Value="3.5" />
+                                                        <Setter Property="StrokeDashArray" Value="7 5" />
+                                                        <DataTrigger.EnterActions>
+                                                            <BeginStoryboard x:Name="SelectedFlowStoryboard">
+                                                                <Storyboard RepeatBehavior="Forever">
+                                                                    <DoubleAnimation
+                                                                        Storyboard.TargetProperty="StrokeDashOffset"
+                                                                        From="12" To="0"
+                                                                        Duration="0:0:0.7" />
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.EnterActions>
+                                                        <DataTrigger.ExitActions>
+                                                            <RemoveStoryboard BeginStoryboardName="SelectedFlowStoryboard" />
+                                                        </DataTrigger.ExitActions>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Path.Style>
+                                    </Path>
+
+                                    <!-- 装饰层：终点箭头 + 两端端口圆点（随连线状态同色） -->
+                                    <Path IsHitTestVisible="False" Data="{Binding DecorData}">
+                                        <Path.Style>
+                                            <Style TargetType="Path">
+                                                <Setter Property="Fill" Value="{DynamicResource Theme.Vision.Connection.Line}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=ConnectionHitPath}" Value="True">
+                                                        <Setter Property="Fill" Value="{DynamicResource Theme.Vision.Connection.Selected}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="Fill" Value="{DynamicResource Theme.Vision.Connection.Selected}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Path.Style>
+                                    </Path>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <ItemsControl
+                        x:Name="NodesLayer"
+                        MinWidth="2400"
+                        MinHeight="1400"
+                        ItemsSource="{Binding Nodes, ElementName=Root}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    x:Name="NodeRoot"
+                                    Width="{x:Static ui:WorkflowConnection.NodeWidth}"
+                                    Height="{x:Static ui:WorkflowConnection.NodeHeight}"
+                                    Padding="0"
+                                    Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Cursor="SizeAll"
+                                    MouseLeftButtonDown="Node_MouseLeftButtonDown"
+                                    MouseLeftButtonUp="Node_MouseLeftButtonUp"
+                                    MouseMove="Node_MouseMove"
+                                    SnapsToDevicePixels="True"
+                                    Tag="{Binding ElementName=Root}">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Gray6}" />
+                                            <Setter Property="Effect">
+                                                <Setter.Value>
+        <DropShadowEffect
+                                                        BlurRadius="10"
+                                                        Direction="270"
+                                                        Opacity="0.13"
+                                                        ShadowDepth="1.5"
+                                                        Color="#0F172A" />
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Running}">
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Theme.Vision.Status.Warning.Border}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Success}">
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Theme.Vision.Status.Success.Border}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Failed}">
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource Theme.Vision.Status.Failed.Border}" />
+                                                    <Setter Property="Background" Value="{DynamicResource Theme.Vision.Status.Failed.Background}" />
+                                                </DataTrigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                                    <Setter Property="Effect">
+                                                        <Setter.Value>
+                                                            <DropShadowEffect BlurRadius="18" Direction="270" Opacity="0.28" ShadowDepth="3" Color="#0F172A" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                                    <Setter Property="BorderThickness" Value="2" />
+                                                    <Setter Property="Effect">
+                                                        <Setter.Value>
+                                                            <DropShadowEffect BlurRadius="20" Opacity="0.6" ShadowDepth="0" Color="#0078D4" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                            <!-- 连接端口锚点：左=输入 右=输出（悬停/选中高亮，提供连线视觉锚） -->
+                                            <Ellipse
+                                                Width="6.5"
+                                                Height="6.5"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center"
+                                                Fill="{DynamicResource MahApps.Brushes.Control.Background}"
+                                                Panel.ZIndex="2"
+                                                Stroke="{DynamicResource MahApps.Brushes.Gray6}"
+                                                StrokeThickness="1.5">
+                                                <Ellipse.Style>
+                                                    <Style TargetType="Ellipse">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Stroke" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                                                <Setter Property="Fill" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Ellipse.Style>
+                                            </Ellipse>
+                                            <Ellipse
+                                                Width="6.5"
+                                                Height="6.5"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Fill="{DynamicResource MahApps.Brushes.Control.Background}"
+                                                Panel.ZIndex="2"
+                                                Stroke="{DynamicResource MahApps.Brushes.Gray6}"
+                                                StrokeThickness="1.5">
+                                                <Ellipse.Style>
+                                                    <Style TargetType="Ellipse">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Stroke" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                                                <Setter Property="Fill" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Ellipse.Style>
+                                            </Ellipse>
+
+                                        <!-- 左侧状态色条：运行中脉冲 -->
+                                        <Border
+                                            Grid.Column="0"
+                                            Width="3"
+                                            Height="32"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            CornerRadius="2">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray5}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Running}">
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Vision.Status.Warning}" />
+                                                            <DataTrigger.EnterActions>
+                                                                <BeginStoryboard x:Name="NodeRunningPulse">
+                                                                    <Storyboard RepeatBehavior="Forever">
+                                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.35" To="1" Duration="0:0:0.6" AutoReverse="True" />
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </DataTrigger.EnterActions>
+                                                            <DataTrigger.ExitActions>
+                                                                <RemoveStoryboard BeginStoryboardName="NodeRunningPulse" />
+                                                            </DataTrigger.ExitActions>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Success}">
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Vision.Status.Success}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Failed}">
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Vision.Status.Failed}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+
+                                        <!-- 图标徽章：状态浅色底 + 状态色描边图标 -->
+                                        <Border
+                                            Grid.Column="0"
+                                            Width="28"
+                                            Height="28"
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Center"
+                                            CornerRadius="7"
+                                            Panel.ZIndex="0">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray10}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Running}">
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Vision.Status.Warning.Background}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Success}">
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Vision.Status.Success.Background}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Failed}">
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Vision.Status.Failed.Background}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Path
+                                                Width="15"
+                                                Height="15"
+                                                Data="{Binding RegisterModel.IconGeometry}"
+                                                Fill="Transparent"
+                                                Stretch="Uniform"
+                                                StrokeEndLineCap="Round"
+                                                StrokeLineJoin="Round"
+                                                StrokeStartLineCap="Round"
+                                                StrokeThickness="1.6">
+                                                <Path.Style>
+                                                    <Style TargetType="Path">
+                                                        <Setter Property="Stroke" Value="{DynamicResource MahApps.Brushes.Text}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Running}">
+                                                                <Setter Property="Stroke" Value="{DynamicResource Theme.Vision.Status.Warning}" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Success}">
+                                                                <Setter Property="Stroke" Value="{DynamicResource Theme.Vision.Status.Success}" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Failed}">
+                                                                <Setter Property="Stroke" Value="{DynamicResource Theme.Vision.Status.Failed}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Path.Style>
+                                            </Path>
+                                        </Border>
+
+                                        <!-- 名称 + 算子Key -->
+                                        <Grid Grid.Column="1" Margin="8,0,16,0" VerticalAlignment="Center">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                FontSize="11.5"
+                                                FontWeight="SemiBold"
+                                                Foreground="{DynamicResource MahApps.Brushes.Text}"
+                                                Text="{Binding DisplayName}"
+                                                TextTrimming="CharacterEllipsis"
+                                                ToolTip="{Binding DisplayName}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Pending}">
+                                                                <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray2}" />
+                                                                <Setter Property="FontWeight" Value="Normal" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBlock
+                                                Grid.Row="1"
+                                                Margin="0,1,0,0"
+                                                FontFamily="Consolas"
+                                                FontSize="9"
+                                                Foreground="{DynamicResource MahApps.Brushes.Gray3}"
+                                                Text="{Binding RegisterModel.Key}"
+                                                TextTrimming="CharacterEllipsis" />
+                                        </Grid>
+
+                                        <!-- 执行条件徽标：设置了条件的节点在右下角显示小漏斗，悬停查看条件表达式 -->
+                                        <Border
+                                            Grid.Column="1"
+                                            Padding="2.5,0.5"
+                                            Margin="0,0,3,3"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Background="{DynamicResource MahApps.Brushes.Gray9}"
+                                            BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            Panel.ZIndex="3"
+                                            ToolTipService.ShowDuration="10000">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ExecutionCondition}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding ExecutionCondition}" Value="">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Border.ToolTip>
+                                                <ToolTip>
+                                                    <TextBlock>
+                                                        <Run Text="执行条件：" FontWeight="SemiBold" />
+                                                        <Run Text="{Binding ExecutionCondition}" />
+                                                    </TextBlock>
+                                                </ToolTip>
+                                            </Border.ToolTip>
+                                            <Path
+                                                Width="7"
+                                                Height="7"
+                                                Data="M2,3 H14 L9.5,8.5 V13 L6.5,14.5 V8.5 Z"
+                                                Stretch="Uniform"
+                                                Stroke="{DynamicResource MahApps.Brushes.Accent}"
+                                                StrokeEndLineCap="Round"
+                                                StrokeLineJoin="Round"
+                                                StrokeStartLineCap="Round"
+                                                StrokeThickness="1.4" />
+                                        </Border>
+
+                                        <!-- 执行状态徽章：悬浮于卡片右上角外侧（通知角标样式），不遮挡卡片内容；未执行时隐藏 -->
+                                        <Border
+                                            Grid.Column="1"
+                                            Padding="5,1"
+                                            Margin="0,-7,-7,0"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            CornerRadius="8"
+                                            Panel.ZIndex="3">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray10}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Pending}">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Running}">
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Vision.Status.Warning.Background}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Success}">
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Vision.Status.Success.Background}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Failed}">
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Vision.Status.Failed.Background}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock VerticalAlignment="Center" FontSize="9.5">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Gray3}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Running}">
+                                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Vision.Status.Warning}" />
+                                                                    <Setter Property="Text" Value="执行中" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Success}">
+                                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Vision.Status.Success}" />
+                                                                    <Setter Property="Text" Value="✓" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Failed}">
+                                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Vision.Status.Failed}" />
+                                                                    <Setter Property="Text" Value="✗" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                                <TextBlock
+                                                    Margin="4,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    FontSize="8.5"
+                                                    Foreground="{DynamicResource MahApps.Brushes.Gray3}"
+                                                    Text="{Binding LastElapsedText}"
+                                                    ToolTip="{Binding StatusMessage}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="{x:Static shared:HandleStatus.Running}">
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- 顶部输入端口：常显环形圆点，悬停/选中点亮 -->
+                                        <Grid
+                                            Grid.ColumnSpan="2"
+                                            Width="14"
+                                            Height="14"
+                                            Margin="0,-7,0,0"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Top"
+                                            Panel.ZIndex="2"
+                                            Cursor="Cross"
+                                            MouseLeftButtonDown="InputPort_MouseLeftButtonDown"
+                                            MouseLeftButtonUp="InputPort_MouseLeftButtonUp"
+                                            ToolTip="输入端口：拖到上游节点连线，或点击开始连线">
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="Opacity" Value="0.6" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=NodeRoot}" Value="True">
+                                                            <Setter Property="Opacity" Value="1" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="Opacity" Value="1" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                            <Ellipse
+                                                Fill="{DynamicResource MahApps.Brushes.Control.Background}"
+                                                Stroke="{DynamicResource MahApps.Brushes.Gray4}"
+                                                StrokeThickness="1.6" />
+                                            <Ellipse Width="6" Height="6" Fill="{DynamicResource MahApps.Brushes.Gray4}" />
+                                        </Grid>
+
+                                        <!-- 底部输出端口：常显，实心强调色 -->
+                                        <Grid
+                                            Grid.ColumnSpan="2"
+                                            Width="14"
+                                            Height="14"
+                                            Margin="0,0,0,-7"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            Panel.ZIndex="2"
+                                            Cursor="Cross"
+                                            MouseLeftButtonDown="OutputPort_MouseLeftButtonDown"
+                                            ToolTip="输出端口：按住拖到下游节点建立连线">
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="Opacity" Value="0.85" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsMouseOver, ElementName=NodeRoot}" Value="True">
+                                                            <Setter Property="Opacity" Value="1" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="Opacity" Value="1" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                            <Ellipse
+                                                Fill="{DynamicResource MahApps.Brushes.Accent}"
+                                                Stroke="{DynamicResource MahApps.Brushes.Control.Background}"
+                                                StrokeThickness="1.6" />
+                                        </Grid>
+                                    </Grid>
+                                    <Border.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem
+                                                Command="{Binding PlacementTarget.Tag.NodeEditCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                Header="参数设置" />
+                                            <MenuItem
+                                                Command="{Binding PlacementTarget.Tag.NodeRenameCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                Header="重命名节点..." />
+                                            <MenuItem
+                                                Command="{Binding PlacementTarget.Tag.NodeExecuteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                Header="执行节点" />
+                                            <MenuItem
+                                                Command="{Binding PlacementTarget.Tag.NodeConditionCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                Header="执行条件..." />
+
+                                            <Separator />
+                                            <MenuItem
+                                                Command="{Binding PlacementTarget.Tag.NodeDeleteCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                CommandParameter="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                Header="删除节点" />
+                                        </ContextMenu>
+                                    </Border.ContextMenu>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+
+                <Path
+                    x:Name="PreviewConnectionPath"
+                    IsHitTestVisible="False"
+                    Stroke="{DynamicResource Theme.Vision.Connection.Selected}"
+                    StrokeDashArray="7 5"
+                    StrokeEndLineCap="Round"
+                    StrokeLineJoin="Round"
+                    StrokeStartLineCap="Round"
+                    StrokeThickness="2.5"
+                    Opacity="0.85"
+                    Visibility="Collapsed">
+                    <Path.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard x:Name="PreviewFlowStoryboard">
+                                <Storyboard RepeatBehavior="Forever">
+                                    <DoubleAnimation
+                                        Storyboard.TargetProperty="StrokeDashOffset"
+                                        From="12" To="0"
+                                        Duration="0:0:0.7" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Path.Triggers>
+                </Path>
+
+                <Rectangle
+                    x:Name="SelectionRectangle"
+                    IsHitTestVisible="False"
+                    Fill="{DynamicResource MahApps.Brushes.Accent}"
+                    Opacity="0.16"
+                    Stroke="{DynamicResource MahApps.Brushes.Accent}"
+                    StrokeThickness="1.5"
+                    Visibility="Collapsed" />
+            
+                <!-- 背景装饰层（不拦截交互）：顶部微光 + 空画布引导 -->
+                <Border
+                    Canvas.Left="0"
+                    Canvas.Top="0"
+                    Width="{Binding ActualWidth, ElementName=WorkflowCanvas}"
+                    Height="{Binding ActualHeight, ElementName=WorkflowCanvas}"
+                    IsHitTestVisible="False">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#08FFFFFF" Offset="0" />
+                            <GradientStop Color="#00FFFFFF" Offset="0.18" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <!-- 空画布引导：拖入第一个算子后自动消失 -->
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Opacity="0.75">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Nodes.Count, ElementName=Root}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <Path
+                                HorizontalAlignment="Center"
+                                Width="40" Height="40"
+                                Opacity="0.35"
+                                Data="{StaticResource Icon.Workflow}"
+                                Style="{StaticResource ToolbarIconPathStyle}" />
+                            <TextBlock
+                                Margin="0,10,0,0"
+                                HorizontalAlignment="Center"
+                                FontSize="13.5"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource MahApps.Brushes.Gray3}"
+                                Text="从左侧工具箱拖入算子，开始搭建视觉流程" />
+                            <TextBlock
+                                Margin="0,6,0,0"
+                                HorizontalAlignment="Center"
+                                FontSize="11"
+                                Foreground="{DynamicResource MahApps.Brushes.Gray4}"
+                                Opacity="0.85"
+                                Text="拖动节点下方输出端到目标节点输入端建立连线 · 滚轮缩放 · 中键/空格平移" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+</Canvas>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
+
+

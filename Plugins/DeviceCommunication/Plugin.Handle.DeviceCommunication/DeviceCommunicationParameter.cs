@@ -1,6 +1,6 @@
 using System.ComponentModel;
-using HalconVisionStudio.Shared;
-using HalconVisionStudio.Shared.Communication;
+using ZeroCodeVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared.Communication;
 
 namespace Plugin.Handle.DeviceCommunication
 {

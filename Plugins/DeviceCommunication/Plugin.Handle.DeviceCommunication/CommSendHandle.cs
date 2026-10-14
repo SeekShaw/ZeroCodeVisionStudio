@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using HalconVisionStudio.Shared;
-using HalconVisionStudio.Shared.Communication;
+using ZeroCodeVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared.Communication;
 
 namespace Plugin.Handle.DeviceCommunication
 {
@@ -45,7 +45,7 @@ namespace Plugin.Handle.DeviceCommunication
         [Description("十六进制")] 十六进制 = 1
     }
 
-    [Handle("通讯发送", "CommSend", "通过通讯驱动中心配置的驱动（TCP客户端/TCP服务端/UDP/串口）发送文本或十六进制数据。长连接复用，无需每次重建连接。", "设备通讯")]
+    [Handle("通讯发送", "CommSend", "通过通讯驱动中心配置的驱动（TCP客户端/TCP服务端/UDP/串口）发送文本或十六进制数据。长连接复用，无需每次重建连接。", "设备通讯", OperatorBackend = OperatorBackend.Hybrid)]
     public class CommSendHandle : ParameterHandleBase<CommSendParameter>
     {
         public CommSendHandle(IDialogService dialogService) : base(dialogService)

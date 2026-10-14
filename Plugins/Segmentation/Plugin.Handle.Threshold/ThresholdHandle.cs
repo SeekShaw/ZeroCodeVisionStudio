@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Threshold
 {
-    [Handle("阈值分割", "Threshold", "按灰度范围分割图像像素。", Common.HandleType_Segmentation)]
+    [Handle("阈值分割", "Threshold", "按灰度范围分割图像像素。", Common.HandleType_Segmentation, OperatorBackend = OperatorBackend.OpenCV)]
     public class ThresholdHandle : ParameterHandleBase<ThresholdParameter>, IHandleDataSlots
     {
         public ThresholdHandle(IDialogService dialogService) : base(dialogService)

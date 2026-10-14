@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using Plugin.Handle.AngleMeasure.Views;
 
 namespace Plugin.Handle.AngleMeasure
@@ -67,7 +67,7 @@ namespace Plugin.Handle.AngleMeasure
     /// <summary>
     /// 两条直线夹角测量算子。
     /// </summary>
-    [Handle("线线夹角", "AngleLL", "测量两条直线之间的夹角（度），支持图形标注叠加。", Common.HandleType_Measurement)]
+    [Handle("线线夹角", "AngleLL", "测量两条直线之间的夹角（度），支持图形标注叠加。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class AngleLLHandle : AngleMeasureBase
     {
         public AngleLLHandle(IDialogService dialogService) : base(dialogService)
@@ -121,7 +121,7 @@ namespace Plugin.Handle.AngleMeasure
     /// <summary>
     /// 直线与X轴夹角测量算子。
     /// </summary>
-    [Handle("线与X轴夹角", "AngleLX", "测量直线与X轴正方向的夹角（度），支持图形叠加。", Common.HandleType_Measurement)]
+    [Handle("线与X轴夹角", "AngleLX", "测量直线与X轴正方向的夹角（度），支持图形叠加。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class AngleLXHandle : AngleMeasureBase
     {
         public AngleLXHandle(IDialogService dialogService) : base(dialogService)
@@ -169,7 +169,7 @@ namespace Plugin.Handle.AngleMeasure
     /// <summary>
     /// 两线相对角度测量算子。
     /// </summary>
-    [Handle("两线相对角度", "RelAngleLL", "测量第二条线相对于第一条线的相对角度（度）。", Common.HandleType_Measurement)]
+    [Handle("两线相对角度", "RelAngleLL", "测量第二条线相对于第一条线的相对角度（度）。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class RelAngleLLHandle : AngleMeasureBase
     {
         public RelAngleLLHandle(IDialogService dialogService) : base(dialogService)

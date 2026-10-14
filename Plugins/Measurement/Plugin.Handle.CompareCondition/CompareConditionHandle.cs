@@ -1,13 +1,13 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Globalization;
 using System.Text;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using HalconDotNet;
 using Plugin.Handle.CompareCondition.Views;
 
 namespace Plugin.Handle.CompareCondition
 {
-    [Handle("条件比较", "CompareCondition", "支持自定义比较项，并可将每个比较项绑定到其他节点输出。", Common.HandleType_Measurement)]
+    [Handle("条件比较", "CompareCondition", "支持自定义比较项，并可将每个比较项绑定到其他节点输出。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class CompareConditionHandle : ParameterHandleBase<CompareConditionParameter>, IHandleDataSlots
     {
         public const string LeftInputKeyPrefix = "compare.left.";

@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.InnerCircle
 {
-    [Handle("最大内接圆", "InnerCircle", "求解区域的最大内接圆并输出圆形区域，支持标定半径换算。", Common.HandleType_ShapeFeature)]
+    [Handle("最大内接圆", "InnerCircle", "求解区域的最大内接圆并输出圆形区域，支持标定半径换算。", Common.HandleType_ShapeFeature, OperatorBackend = OperatorBackend.OpenCV)]
     public class InnerCircleHandle : ParameterHandleBase<FeatureMeasureParameter>, IHandleDataSlots
     {
         public InnerCircleHandle(IDialogService dialogService) : base(dialogService)

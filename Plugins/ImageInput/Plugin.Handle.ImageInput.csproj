@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>disable</Nullable>
@@ -14,14 +14,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AAAandSphinx.Vision.SDK.HK\AAAandSphinx.Vision.SDK.HIK.csproj" />
-    <ProjectReference Include="..\..\HalconVisionStudio.Core\HalconVisionStudio.Core.csproj" />
-    <ProjectReference Include="..\..\HalconVisionStudio.Shared\HalconVisionStudio.Shared.csproj" />
+    <ProjectReference Include="..\..\ZeroCode.Vision.SDK.HK\ZeroCode.Vision.SDK.HIK.csproj" />
+    <ProjectReference Include="..\..\ZeroCodeVisionStudio.Core\ZeroCodeVisionStudio.Core.csproj" />
+    <ProjectReference Include="..\..\ZeroCodeVisionStudio.Shared\ZeroCodeVisionStudio.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="MvCameraControl.Net">
-      <HintPath>..\..\AAAandSphinx.Vision.SDK.HK\libs\MvCameraControl.Net.dll</HintPath>
+      <HintPath>..\..\ZeroCode.Vision.SDK.HK\libs\MvCameraControl.Net.dll</HintPath>
     </Reference>
     <Reference Include="halcondotnet">
       <HintPath>..\..\libs\halcondotnet.dll</HintPath>

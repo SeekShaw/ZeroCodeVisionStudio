@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.SobelAmp
 {
@@ -9,7 +9,7 @@ namespace Plugin.Handle.SobelAmp
     /// Sobel 梯度幅值算子处理器。
     /// 调用 HALCON 算子 <see cref="HOperatorSet.SobelAmp"/> 计算图像的 Sobel 边缘梯度幅值。
     /// </summary>
-    [Handle("Sobel边缘幅值", "SobelAmp", "计算图像的 Sobel 边缘幅值。", Common.HandleType_Preprocessing)]
+    [Handle("Sobel边缘幅值", "SobelAmp", "计算图像的 Sobel 边缘幅值。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class SobelAmpHandle : ParameterHandleBase<SobelAmpParameter>, IHandleDataSlots
     {
         public SobelAmpHandle(IDialogService dialogService) : base(dialogService)

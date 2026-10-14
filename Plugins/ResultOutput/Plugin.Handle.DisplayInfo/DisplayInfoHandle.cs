@@ -1,7 +1,7 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using HalconDotNet;
 using Plugin.Handle.DisplayInfo.Views;
 
@@ -11,7 +11,7 @@ namespace Plugin.Handle.DisplayInfo
     /// 组合固定文本和上游节点输出，并将结果显示到右侧显示窗口叠加层。
     /// 动态显示项数量由参数窗口维护，输入来源绑定会按显示项数量自动增减。
     /// </summary>
-    [Handle("显示信息", "DisplayInfo", "组合文本和上游节点输出，并在右侧显示窗口中叠加显示。", Common.HandleType_ResultOutput)]
+    [Handle("显示信息", "DisplayInfo", "组合文本和上游节点输出，并在右侧显示窗口中叠加显示。", Common.HandleType_ResultOutput, OperatorBackend = OperatorBackend.Hybrid)]
     public class DisplayInfoHandle : ParameterHandleBase<DisplayInfoParameter>, IHandleDataSlots
     {
         public const string BackgroundInputKey = "display.background";

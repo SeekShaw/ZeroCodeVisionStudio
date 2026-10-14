@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using HalconVisionStudio.Shared;
-using HalconVisionStudio.Shared.Communication;
+using ZeroCodeVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared.Communication;
 
 namespace Plugin.Handle.DeviceCommunication
 {
@@ -196,7 +196,7 @@ namespace Plugin.Handle.DeviceCommunication
         }
     }
 
-    [Handle("TCP发送", "TcpSend", "通过通讯驱动中心的长连接驱动（TCP/UDP/串口/MQTT 等）发送文本或十六进制数据。发送内容支持 $Key$ 上游插值。", "设备通讯")]
+    [Handle("TCP发送", "TcpSend", "通过通讯驱动中心的长连接驱动（TCP/UDP/串口/MQTT 等）发送文本或十六进制数据。发送内容支持 $Key$ 上游插值。", "设备通讯", OperatorBackend = OperatorBackend.Hybrid)]
     public class TcpSendHandle : CommunicationHandleBase<TcpSendParameter>
     {
         public TcpSendHandle(IDialogService dialogService) : base(dialogService)
@@ -234,7 +234,7 @@ namespace Plugin.Handle.DeviceCommunication
         }
     }
 
-    [Handle("TCP接收", "TcpReceive", "通过通讯驱动中心的长连接驱动接收数据（阻塞等待至超时），按编码转为文本输出。", "设备通讯")]
+    [Handle("TCP接收", "TcpReceive", "通过通讯驱动中心的长连接驱动接收数据（阻塞等待至超时），按编码转为文本输出。", "设备通讯", OperatorBackend = OperatorBackend.Hybrid)]
     public class TcpReceiveHandle : CommunicationHandleBase<TcpReceiveParameter>
     {
         public TcpReceiveHandle(IDialogService dialogService) : base(dialogService)
@@ -291,7 +291,7 @@ namespace Plugin.Handle.DeviceCommunication
         }
     }
 
-    [Handle("串口发送", "SerialSend", "通过通讯驱动中心的串口驱动发送文本或十六进制数据（串口参数在驱动管理中维护）。", "设备通讯")]
+    [Handle("串口发送", "SerialSend", "通过通讯驱动中心的串口驱动发送文本或十六进制数据（串口参数在驱动管理中维护）。", "设备通讯", OperatorBackend = OperatorBackend.Hybrid)]
     public class SerialSendHandle : CommunicationHandleBase<SerialSendParameter>
     {
         public SerialSendHandle(IDialogService dialogService) : base(dialogService)
@@ -329,7 +329,7 @@ namespace Plugin.Handle.DeviceCommunication
         }
     }
 
-    [Handle("Modbus写入", "ModbusTcpWrite", "通过通讯驱动中心的 Modbus TCP / RTU 主站驱动写单个保持寄存器或单个线圈（从站地址在驱动管理中维护）。", "设备通讯")]
+    [Handle("Modbus写入", "ModbusTcpWrite", "通过通讯驱动中心的 Modbus TCP / RTU 主站驱动写单个保持寄存器或单个线圈（从站地址在驱动管理中维护）。", "设备通讯", OperatorBackend = OperatorBackend.Hybrid)]
     public class ModbusTcpWriteHandle : CommunicationHandleBase<ModbusTcpWriteParameter>
     {
         public const string AddressInputKey = "communication.modbus.address";
@@ -384,7 +384,7 @@ namespace Plugin.Handle.DeviceCommunication
         }
     }
 
-    [Handle("Modbus读取", "ModbusTcpRead", "通过通讯驱动中心的 Modbus TCP / RTU 主站驱动读取保持寄存器或线圈（从站地址在驱动管理中维护）。", "设备通讯")]
+    [Handle("Modbus读取", "ModbusTcpRead", "通过通讯驱动中心的 Modbus TCP / RTU 主站驱动读取保持寄存器或线圈（从站地址在驱动管理中维护）。", "设备通讯", OperatorBackend = OperatorBackend.Hybrid)]
     public class ModbusTcpReadHandle : CommunicationHandleBase<ModbusTcpReadParameter>
     {
         public const string AddressInputKey = "communication.modbus.address";

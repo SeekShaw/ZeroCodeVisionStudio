@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
-using HalconVisionStudio.Shared;
-using HalconVisionStudio.Shared.Communication;
+using ZeroCodeVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared.Communication;
 
 namespace Plugin.Handle.DeviceCommunication
 {
@@ -53,7 +53,7 @@ namespace Plugin.Handle.DeviceCommunication
         }
     }
 
-    [Handle("Modbus读写", "ModbusDriver", "通过通讯驱动中心的 Modbus TCP / Modbus RTU 长连接主站读写寄存器与线圈（替代旧版每次建连的 Modbus 算子）。写入支持 $Key$ 上游值插值。", "设备通讯")]
+    [Handle("Modbus读写", "ModbusDriver", "通过通讯驱动中心的 Modbus TCP / Modbus RTU 长连接主站读写寄存器与线圈（替代旧版每次建连的 Modbus 算子）。写入支持 $Key$ 上游值插值。", "设备通讯", OperatorBackend = OperatorBackend.Hybrid)]
     public class ModbusDriverHandle : ParameterHandleBase<ModbusDriverParam>
     {
         public ModbusDriverHandle(IDialogService dialogService) : base(dialogService)

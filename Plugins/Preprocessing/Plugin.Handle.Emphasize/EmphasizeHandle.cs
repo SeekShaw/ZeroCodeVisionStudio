@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Emphasize
 {
@@ -9,7 +9,7 @@ namespace Plugin.Handle.Emphasize
     /// 图像增强算子处理器。
     /// 调用 HALCON 算子 <see cref="HOperatorSet.Emphasize"/> 增强图像局部对比度。
     /// </summary>
-    [Handle("图像增强", "Emphasize", "在分割前增强图像局部对比度。", Common.HandleType_Preprocessing)]
+    [Handle("图像增强", "Emphasize", "在分割前增强图像局部对比度。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class EmphasizeHandle : ParameterHandleBase<EmphasizeParameter>, IHandleDataSlots
     {
         public EmphasizeHandle(IDialogService dialogService) : base(dialogService)

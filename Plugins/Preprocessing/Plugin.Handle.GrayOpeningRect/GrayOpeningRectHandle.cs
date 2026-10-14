@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.GrayOpeningRect
 {
@@ -9,7 +9,7 @@ namespace Plugin.Handle.GrayOpeningRect
     /// 灰度矩形开运算算子处理器。
     /// 调用 HALCON 算子 <see cref="HOperatorSet.GrayOpeningRect"/> 对灰度图像执行开运算。
     /// </summary>
-    [Handle("灰度矩形开运算", "GrayOpeningRect", "使用矩形滤波器对灰度图像执行开运算。", Common.HandleType_Preprocessing)]
+    [Handle("灰度矩形开运算", "GrayOpeningRect", "使用矩形滤波器对灰度图像执行开运算。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class GrayOpeningRectHandle : ParameterHandleBase<GrayOpeningRectParameter>, IHandleDataSlots
     {
         public GrayOpeningRectHandle(IDialogService dialogService) : base(dialogService)

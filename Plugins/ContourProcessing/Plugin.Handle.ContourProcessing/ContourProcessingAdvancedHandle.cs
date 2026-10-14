@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.ContourProcessing
 {
@@ -274,7 +274,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 区域转轮廓算子。
     /// </summary>
-    [Handle("区域转轮廓", "GenContoursSkeletonXld", "从区域的骨架生成XLD轮廓。", "轮廓处理")]
+    [Handle("区域转轮廓", "GenContoursSkeletonXld", "从区域的骨架生成XLD轮廓。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class GenContoursSkeletonXldHandle : ParameterHandleBase<GenContoursSkeletonXldParameter>, IHandleDataSlots
     {
         public GenContoursSkeletonXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -309,7 +309,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓仿射变换算子。
     /// </summary>
-    [Handle("轮廓仿射变换", "AffineTransContourXld", "对XLD轮廓执行平移、旋转与缩放变换。", "轮廓处理")]
+    [Handle("轮廓仿射变换", "AffineTransContourXld", "对XLD轮廓执行平移、旋转与缩放变换。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class AffineTransContourXldHandle : ParameterHandleBase<AffineTransContourXldParameter>, IHandleDataSlots
     {
         public AffineTransContourXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -359,7 +359,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓联合（共圆）算子。
     /// </summary>
-    [Handle("轮廓联合(共圆)", "UnionCoclircularContoursXld", "联合处于同一圆周上的XLD轮廓。", "轮廓处理")]
+    [Handle("轮廓联合(共圆)", "UnionCoclircularContoursXld", "联合处于同一圆周上的XLD轮廓。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class UnionCoclircularContoursXldHandle : ParameterHandleBase<UnionCoclircularContoursXldParameter>, IHandleDataSlots
     {
         public UnionCoclircularContoursXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -404,7 +404,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓排序算子。
     /// </summary>
-    [Handle("轮廓排序", "SortContoursXld", "按照指定特征和空间顺序对XLD轮廓进行排序。", "轮廓处理")]
+    [Handle("轮廓排序", "SortContoursXld", "按照指定特征和空间顺序对XLD轮廓进行排序。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class SortContoursXldHandle : ParameterHandleBase<SortContoursXldParameter>, IHandleDataSlots
     {
         public SortContoursXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -444,7 +444,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓分割成线段算子。
     /// </summary>
-    [Handle("轮廓分割成线段", "SegmentContourAttribXld", "根据属性将XLD轮廓分割成多个线段。", "轮廓处理")]
+    [Handle("轮廓分割成线段", "SegmentContourAttribXld", "根据属性将XLD轮廓分割成多个线段。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class SegmentContourAttribXldHandle : ParameterHandleBase<SegmentContourAttribXldParameter>, IHandleDataSlots
     {
         public SegmentContourAttribXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -488,7 +488,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 共线轮廓联合算子。
     /// </summary>
-    [Handle("共线轮廓联合", "UnionCollinearContoursXld", "联合处于同一直线上的相邻XLD轮廓。", "轮廓处理")]
+    [Handle("共线轮廓联合", "UnionCollinearContoursXld", "联合处于同一直线上的相邻XLD轮廓。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class UnionCollinearContoursXldHandle : ParameterHandleBase<UnionCollinearContoursXldParameter>, IHandleDataSlots
     {
         public UnionCollinearContoursXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -530,7 +530,7 @@ namespace Plugin.Handle.ContourProcessing
     /// <summary>
     /// 轮廓分割成点算子。
     /// </summary>
-    [Handle("轮廓提取点坐标", "SegmentContoursXldPoint", "提取XLD轮廓所有控制点的行列坐标。", "轮廓处理")]
+    [Handle("轮廓提取点坐标", "SegmentContoursXldPoint", "提取XLD轮廓所有控制点的行列坐标。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class SegmentContoursXldPointHandle : HandleBase, IHandleDataSlots
     {
         public SegmentContoursXldPointHandle(IDialogService dialogService) : base(dialogService)

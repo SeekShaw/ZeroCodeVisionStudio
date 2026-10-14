@@ -1,7 +1,7 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using AAAandSphinx.Vision.SDK;
-using HalconVisionStudio.Shared;
+using ZeroCode.Vision.SDK;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.CameraHik
 {
@@ -79,7 +79,7 @@ namespace Plugin.Handle.CameraHik
             AvailableCameras.Clear();
             try
             {
-                using (var camera = new AAAandSphinx.Vision.SDK.HK.CameraHik())
+                using (var camera = new ZeroCode.Vision.SDK.HK.CameraHik())
                 {
                     var devices = camera.GetCameraEnum();
                     foreach (var device in devices)

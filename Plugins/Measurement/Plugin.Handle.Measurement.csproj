@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\HalconVisionStudio.Core\HalconVisionStudio.Core.csproj" />
-    <ProjectReference Include="..\..\HalconVisionStudio.Shared\HalconVisionStudio.Shared.csproj" />
+    <ProjectReference Include="..\..\ZeroCodeVisionStudio.Core\ZeroCodeVisionStudio.Core.csproj" />
+    <ProjectReference Include="..\..\ZeroCodeVisionStudio.Shared\ZeroCodeVisionStudio.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

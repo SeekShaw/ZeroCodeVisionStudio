@@ -1,0 +1,1463 @@
+<UserControl x:Class="ZeroCodeVisionStudio.Views.VisionCopilotPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:copilot="clr-namespace:ZeroCodeVisionStudio.AI.Copilot;assembly=ZeroCodeVisionStudio.AI"
+             mc:Ignorable="d"
+             d:DesignHeight="780" d:DesignWidth="430"
+             Background="{DynamicResource Token.Surface.Background}">
+
+    <!--
+        Vision Copilot 智能助手面板
+        适配暗色/亮色自适应主题，提供流式对话、深度推理思考卡、一体化智能输入坞及现代服务配置体验。
+    -->
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+
+        <!-- ==================== 画刷 ==================== -->
+        <!-- 用户气泡渐变（现代蓝调） -->
+        <LinearGradientBrush x:Key="UserBubbleBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#3B82F6" Offset="0"/>
+            <GradientStop Color="#2563EB" Offset="1"/>
+        </LinearGradientBrush>
+        <!-- AI 徽标徽章渐变（蓝紫流光） -->
+        <LinearGradientBrush x:Key="AvatarBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#3B82F6" Offset="0"/>
+            <GradientStop Color="#8B5CF6" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- ==================== 图标按钮通用样式 ==================== -->
+        <Style x:Key="IconButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource Token.Text.Secondary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource Token.Surface.Muted}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Token.Text.Primary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ==================== 气泡样式 ==================== -->
+        <!-- 用户气泡：右上圆角、右下折角 -->
+        <Style x:Key="UserBubbleStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource UserBubbleBrush}"/>
+            <Setter Property="CornerRadius" Value="14,14,3,14"/>
+            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="Margin" Value="40,2,8,2"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="MaxWidth" Value="320"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.12" Direction="270" Color="#2563EB"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 助手气泡：卡片底色、柔和微边框 -->
+        <Style x:Key="AssistantBubbleStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource Token.Surface.Card}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Token.Border.Subtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3,14,14,14"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Margin" Value="0,2,24,2"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="MaxWidth" Value="340"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.04" Direction="270" Color="#000000"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 工具调用/执行卡片 -->
+        <Style x:Key="ToolBubbleStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource Token.Surface.Muted}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Token.Border.Subtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="38,2,24,2"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+
+        <!-- 消息正文文本框（支持全选复制，不可编辑） -->
+        <Style x:Key="MessageTextStyle" TargetType="TextBox">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Foreground" Value="{DynamicResource Token.Text.Primary}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="Transparent">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="False"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Role}" Value="{x:Static copilot:MessageRole.User}">
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Role}" Value="{x:Static copilot:MessageRole.Tool}">
+                    <Setter Property="Foreground" Value="{DynamicResource Token.Text.Secondary}"/>
+                    <Setter Property="FontFamily" Value="Consolas, Microsoft YaHei UI"/>
+                    <Setter Property="FontSize" Value="10.5"/>
+                    <Setter Property="MaxHeight" Value="220"/>
+                    <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- ==================== 流式指示点（脉冲动画，三个错峰） ==================== -->
+        <Style x:Key="StreamingDot1" TargetType="Ellipse">
+            <Setter Property="Width" Value="5"/>
+            <Setter Property="Height" Value="5"/>
+            <Setter Property="Fill" Value="{DynamicResource Token.Primary}"/>
+            <Setter Property="Opacity" Value="0.25"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsStreaming}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.15" To="1" Duration="0:0:0.5" AutoReverse="True"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="StreamingDot2" TargetType="Ellipse" BasedOn="{StaticResource StreamingDot1}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsStreaming}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.15" To="1" Duration="0:0:0.5" AutoReverse="True" BeginTime="0:0:0.15"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="StreamingDot3" TargetType="Ellipse" BasedOn="{StaticResource StreamingDot1}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsStreaming}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.15" To="1" Duration="0:0:0.5" AutoReverse="True" BeginTime="0:0:0.3"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 头部忙碌指示（思考中脉冲点） -->
+        <Style x:Key="BusyDotStyle" TargetType="Ellipse">
+            <Setter Property="Width" Value="7"/>
+            <Setter Property="Height" Value="7"/>
+            <Setter Property="Fill" Value="{DynamicResource Token.Primary}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever">
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.25" To="1" Duration="0:0:0.7" AutoReverse="True"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- ==================== 快捷 Chip：药丸按钮 ==================== -->
+        <Style x:Key="ChipButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource Token.Surface.Muted}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Token.Text.Secondary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Token.Border.Subtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource Token.Surface.Card}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Token.Primary}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Token.Primary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ==================== 表单控件样式（设置区） ==================== -->
+        <Style x:Key="ControlStyle.Button.Primary" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource Token.Primary}"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,6"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="7" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ControlStyle.Button.Secondary" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource Token.Surface.Card}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Token.Text.Primary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Token.Border.Subtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource Token.Surface.Muted}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Token.Primary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ControlStyle.Button.Ghost" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource Token.Primary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="5" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource Token.Surface.Muted}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ControlStyle.TextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource Token.Surface.Card}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Token.Text.Primary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Token.Border.Subtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="CaretBrush" Value="{DynamicResource Token.Text.Primary}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Token.Primary}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Token.Primary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ControlStyle.PasswordBox" TargetType="PasswordBox">
+            <Setter Property="Background" Value="{DynamicResource Token.Surface.Card}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Token.Text.Primary}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Token.Border.Subtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="7">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Token.Primary}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Token.Primary}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource Token.Text.Secondary}"/>
+            <Setter Property="Margin" Value="0,8,0,3"/>
+        </Style>
+
+        <Style x:Key="SettingsCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource Token.Surface.Card}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Token.Border.Subtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <!-- 0. 顶部标题与状态栏 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 1. 工作区主体（对话区 or 配置区） -->
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ==================== 1. 顶部标题与状态栏 ==================== -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource Token.Surface.Card}"
+                BorderBrush="{DynamicResource Token.Border.Subtle}"
+                BorderThickness="0,0,0,1"
+                Padding="12,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <!-- AI 徽标 -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- 标题与状态 -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- 对话/配置 模式切换胶囊 -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- 快捷操作按钮组 -->
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- AI 渐变头像徽章 -->
+                <Border Grid.Column="0"
+                        Width="32" Height="32"
+                        CornerRadius="8"
+                        Background="{StaticResource AvatarBrush}"
+                        Margin="0,0,10,0">
+                    <Path Width="14" Height="14" Data="{StaticResource Icon.Spark}" Fill="White" Stretch="Uniform"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+
+                <!-- 标题与实时服务状态行 -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Vision Copilot" FontSize="13" FontWeight="Bold"
+                                   Foreground="{DynamicResource Token.Text.Primary}"/>
+                        <Ellipse Style="{StaticResource BusyDotStyle}" Margin="6,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- MCP 状态与当前激活模型 Badge -->
+                    <StackPanel Orientation="Horizontal" Margin="0,2,0,0" VerticalAlignment="Center">
+                        <Ellipse Width="6" Height="6" VerticalAlignment="Center" Margin="0,0,4,0">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Fill" Value="{DynamicResource Token.Text.Muted}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMcpRunning}" Value="True">
+                                            <Setter Property="Fill" Value="#10B981"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock Text="{Binding McpStatusText}" FontSize="10"
+                                   Foreground="{DynamicResource Token.Text.Muted}" VerticalAlignment="Center"/>
+
+                        <!-- 激活模型标签（仅在有模型名且非空白时显示） -->
+                        <Border CornerRadius="4" Padding="5,1" Margin="6,0,0,0"
+                                Background="{DynamicResource Token.Surface.Muted}"
+                                ToolTip="{Binding Settings.ModelName}">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Settings.ModelName, Converter={StaticResource StringToVisibilityConverter}}" Value="Visible">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock Text="{Binding Settings.ModelName}" MaxWidth="110" TextTrimming="CharacterEllipsis"
+                                       FontSize="9.5" FontFamily="Consolas, Segoe UI" Foreground="{DynamicResource Token.Text.Secondary}"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- 对话 / 设置 模式切换胶囊（彻底避免文字与图标重叠） -->
+                <Border Grid.Column="2"
+                        Margin="0,0,8,0"
+                        Background="{DynamicResource Token.Surface.Muted}"
+                        BorderBrush="{DynamicResource Token.Border.Subtle}"
+                        BorderThickness="1"
+                        CornerRadius="7"
+                        Padding="2"
+                        VerticalAlignment="Center">
+                    <Button Command="{Binding ToggleSettingsCommand}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Padding="8,3"
+                            Height="24"
+                            Cursor="Hand"
+                            ToolTip="切换「对话」与「服务配置」页面">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="modeBd" Background="Transparent" CornerRadius="5" Padding="7,2">
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Path Width="11" Height="11" Data="{StaticResource Icon.Sliders}"
+                                                          Stroke="{DynamicResource Token.Text.Secondary}"
+                                                          Style="{StaticResource ToolbarIconPathStyle}" Margin="0,0,5,0"/>
+                                                    <TextBlock Text="服务配置" FontSize="11" FontWeight="Medium"
+                                                               Foreground="{DynamicResource Token.Text.Secondary}"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="modeBd" Property="Background" Value="{DynamicResource Token.Surface.Card}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSettingsOpen}" Value="True">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{DynamicResource Token.Surface.Card}" CornerRadius="5" Padding="7,2">
+                                                        <Border.Effect>
+                                                            <DropShadowEffect BlurRadius="4" ShadowDepth="1" Opacity="0.08" Direction="270"/>
+                                                        </Border.Effect>
+                                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                            <Path Width="11" Height="11" Data="{StaticResource Icon.Terminal}"
+                                                                  Stroke="{DynamicResource Token.Primary}"
+                                                                  Style="{StaticResource ToolbarIconPathStyle}" Margin="0,0,5,0"/>
+                                                            <TextBlock Text="返回对话" FontSize="11" FontWeight="SemiBold"
+                                                                       Foreground="{DynamicResource Token.Primary}"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Border>
+
+                <!-- 右侧操作按钮组 -->
+                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button ToolTip="清空当前对话记录" Command="{Binding ClearHistoryCommand}"
+                            Style="{StaticResource IconButtonStyle}" Margin="0,0,2,0">
+                        <Path Width="13" Height="13" Data="{StaticResource Icon.Trash}" Stretch="Uniform"
+                              StrokeThickness="2" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                    </Button>
+                    <Button ToolTip="收起 AI 助手面板" Command="{Binding CloseCommand}"
+                            Style="{StaticResource IconButtonStyle}">
+                        <Path Width="13" Height="13" Data="{StaticResource Icon.Close}" Stretch="Uniform"
+                              StrokeThickness="2" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ==================== 2. 工作区主体 ==================== -->
+        <Grid Grid.Row="1">
+
+            <!-- ===== 模式 A：对话工作区（含智能流与一体化输入坞） ===== -->
+            <Grid>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSettingsOpen}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+
+                <Grid.RowDefinitions>
+                    <!-- 消息历史流 -->
+                    <RowDefinition Height="*"/>
+                    <!-- 智能浮动输入坞 -->
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- 消息滚动流 -->
+                <ScrollViewer x:Name="ChatScrollViewer" Grid.Row="0"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              Padding="6,6"
+                              ScrollChanged="ChatScrollViewer_ScrollChanged">
+                    <StackPanel>
+                        <!-- 空状态欢迎卡（零消息时呈现引导） -->
+                        <Border Margin="10,14,10,10" Padding="18,16" CornerRadius="12"
+                                Background="{DynamicResource Token.Surface.Card}"
+                                BorderBrush="{DynamicResource Token.Border.Subtle}" BorderThickness="1">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.04" Direction="270" Color="#000000"/>
+                            </Border.Effect>
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Messages.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackPanel>
+                                <Border Width="42" Height="42" CornerRadius="11" HorizontalAlignment="Center"
+                                        Background="{StaticResource AvatarBrush}" Margin="0,0,0,10">
+                                    <Path Width="20" Height="20" Data="{StaticResource Icon.Spark}" Fill="White" Stretch="Uniform"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="工业视觉智能助手" FontSize="14.5" FontWeight="Bold"
+                                           Foreground="{DynamicResource Token.Text.Primary}"
+                                           HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                                <TextBlock Text="基于多模态大模型 · 算子推荐 · 流程构建 · 缺陷诊断" FontSize="11"
+                                           Foreground="{DynamicResource Token.Text.Muted}"
+                                           HorizontalAlignment="Center" Margin="0,0,0,14"/>
+
+                                <!-- 推荐引导指令卡 -->
+                                <Border Background="{DynamicResource Token.Surface.Muted}" CornerRadius="8" Padding="10,8" Margin="0,0,0,6"
+                                        BorderBrush="{DynamicResource Token.Border.Subtle}" BorderThickness="1">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource Icon.Spark}" Fill="{DynamicResource Token.Primary}" Width="11" Height="11" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="「帮我搭建一个工件圆孔直径测量流程」" FontSize="11.5"
+                                                   Foreground="{DynamicResource Token.Text.Secondary}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="{DynamicResource Token.Surface.Muted}" CornerRadius="8" Padding="10,8" Margin="0,0,0,6"
+                                        BorderBrush="{DynamicResource Token.Border.Subtle}" BorderThickness="1">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource Icon.Workflow}" Stroke="{DynamicResource Token.Primary}" Style="{StaticResource ToolbarIconPathStyle}" Width="11" Height="11" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="「为什么当前节点报错了？帮我排查原因」" FontSize="11.5"
+                                                   Foreground="{DynamicResource Token.Text.Secondary}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Background="{DynamicResource Token.Surface.Muted}" CornerRadius="8" Padding="10,8" Margin="0,0,0,12"
+                                        BorderBrush="{DynamicResource Token.Border.Subtle}" BorderThickness="1">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Data="{StaticResource Icon.Image}" Stroke="{DynamicResource Token.Text.Secondary}" Style="{StaticResource ToolbarIconPathStyle}" Width="11" Height="11" Stretch="Uniform" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="「截取视口画面，分析表面划痕特征并推荐算子」" FontSize="11.5"
+                                                   Foreground="{DynamicResource Token.Text.Secondary}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 底部署性微标 -->
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="⚡ 原生算子执行" FontSize="10" Foreground="{DynamicResource Token.Text.Muted}"/>
+                                    <TextBlock Text=" · " FontSize="10" Foreground="{DynamicResource Token.Text.Muted}"/>
+                                    <TextBlock Text="🔌 MCP 协议集成" FontSize="10" Foreground="{DynamicResource Token.Text.Muted}"/>
+                                    <TextBlock Text=" · " FontSize="10" Foreground="{DynamicResource Token.Text.Muted}"/>
+                                    <TextBlock Text="👁️ 视觉多模态直传" FontSize="10" Foreground="{DynamicResource Token.Text.Muted}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 消息列表 -->
+                        <ItemsControl ItemsSource="{Binding Messages}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type copilot:CopilotMessage}">
+                                    <Grid Margin="0,3">
+                                        <!-- ===== 用户消息：右对齐渐变气泡 ===== -->
+                                        <Grid>
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Role}" Value="{x:Static copilot:MessageRole.User}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                            <StackPanel>
+                                                <Border Style="{StaticResource UserBubbleStyle}">
+                                                    <StackPanel>
+                                                        <TextBox Text="{Binding Content, Mode=OneWay}" Style="{StaticResource MessageTextStyle}"/>
+                                                        <!-- 附加图片角标 -->
+                                                        <Border Background="#22FFFFFF" CornerRadius="5" Padding="6,3" Margin="0,6,0,0"
+                                                                Visibility="{Binding HasImages, Converter={StaticResource BoolToVisConverter}}">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Path Data="{StaticResource Icon.Image}" Stroke="White" Style="{StaticResource ToolbarIconPathStyle}" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                                                <TextBlock FontSize="11" Foreground="#FFFFFF" Opacity="0.9" VerticalAlignment="Center">
+                                                                    <Run Text="已附加 "/><Run Text="{Binding Images.Count, Mode=OneWay}"/><Run Text=" 张视口图片"/>
+                                                                </TextBlock>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Border>
+                                                <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" FontSize="9.5"
+                                                           Foreground="{DynamicResource Token.Text.Muted}"
+                                                           HorizontalAlignment="Right" Margin="0,2,10,0"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!-- ===== 助手消息：头像 + 卡片气泡 ===== -->
+                                        <Grid>
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Role}" Value="{x:Static copilot:MessageRole.Assistant}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <!-- 头像 -->
+                                                <Border Grid.Column="0" Width="26" Height="26" CornerRadius="8" Margin="8,4,0,0"
+                                                        Background="{StaticResource AvatarBrush}" VerticalAlignment="Top">
+                                                    <Path Width="11" Height="11" Data="{StaticResource Icon.Spark}" Fill="White" Stretch="Uniform"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <StackPanel Grid.Column="1">
+                                                    <Border Style="{StaticResource AssistantBubbleStyle}">
+                                                        <StackPanel>
+                                                            <!-- 深度思考过程（推理模型 reasoning_content，专属科技折叠卡） -->
+                                                            <Border Background="{DynamicResource Token.Surface.Muted}"
+                                                                    BorderBrush="{DynamicResource Token.Border.Subtle}"
+                                                                    BorderThickness="1"
+                                                                    CornerRadius="7"
+                                                                    Padding="9,7"
+                                                                    Margin="0,0,0,8"
+                                                                    Visibility="{Binding ReasoningContent, Converter={StaticResource StringToVisibilityConverter}}">
+                                                                <StackPanel>
+                                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                                                        <Path Width="10" Height="10" Data="{StaticResource Icon.Spark}" Fill="#8B5CF6" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                                        <TextBlock Text="深度思考过程" FontSize="10.5" FontWeight="SemiBold"
+                                                                                   Foreground="{DynamicResource Token.Text.Secondary}" VerticalAlignment="Center"/>
+                                                                    </StackPanel>
+                                                                    <TextBox Text="{Binding ReasoningContent, Mode=OneWay}"
+                                                                             Style="{StaticResource MessageTextStyle}"
+                                                                             Foreground="{DynamicResource Token.Text.Muted}"
+                                                                             FontFamily="Consolas, Microsoft YaHei UI"
+                                                                             FontSize="10.5" MaxHeight="180"
+                                                                             VerticalScrollBarVisibility="Auto"/>
+                                                                </StackPanel>
+                                                            </Border>
+
+                                                            <!-- 正文回复 -->
+                                                            <TextBox Text="{Binding Content, Mode=OneWay}" Style="{StaticResource MessageTextStyle}"
+                                                                     Visibility="{Binding Content, Converter={StaticResource StringToVisibilityConverter}}"/>
+
+                                                            <!-- 附加图片（多模态回看） -->
+                                                            <ItemsControl ItemsSource="{Binding Images}" Margin="0,4,0,0">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Border Background="{DynamicResource Token.Surface.Muted}" CornerRadius="5" Padding="6,3" Margin="0,0,4,0">
+                                                                            <TextBlock Text="{Binding}" FontSize="10" FontFamily="Consolas"
+                                                                                       Foreground="{DynamicResource Token.Text.Secondary}"/>
+                                                                        </Border>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+
+                                                            <!-- 结构化工具调用卡片组 -->
+                                                            <ItemsControl ItemsSource="{Binding ToolCalls}" Margin="0,6,0,0">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate DataType="{x:Type copilot:CopilotToolCall}">
+                                                                        <Border Margin="0,3,0,0" Padding="8,7" CornerRadius="6"
+                                                                                Background="{DynamicResource Token.Surface.Muted}"
+                                                                                BorderBrush="{DynamicResource Token.Border.Subtle}"
+                                                                                BorderThickness="1">
+                                                                            <StackPanel>
+                                                                                <StackPanel Orientation="Horizontal">
+                                                                                    <Path Width="10" Height="10" Data="{StaticResource Icon.Terminal}"
+                                                                                          Stroke="{DynamicResource Token.Primary}" Style="{StaticResource ToolbarIconPathStyle}"
+                                                                                          VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                                                    <TextBlock Text="{Binding Name}" FontSize="10.5" FontWeight="SemiBold"
+                                                                                               Foreground="{DynamicResource Token.Text.Primary}" VerticalAlignment="Center"/>
+                                                                                    <TextBlock Text="{Binding StatusText}" FontSize="9.5" Margin="8,0,0,0"
+                                                                                               Foreground="#10B981" VerticalAlignment="Center"/>
+                                                                                </StackPanel>
+                                                                                <TextBox Text="{Binding Arguments, Mode=OneWay}"
+                                                                                         Style="{StaticResource MessageTextStyle}"
+                                                                                         Foreground="{DynamicResource Token.Text.Secondary}"
+                                                                                         FontFamily="Consolas" FontSize="10"
+                                                                                         MaxHeight="70" VerticalScrollBarVisibility="Auto"
+                                                                                         Margin="0,3,0,0"
+                                                                                         Visibility="{Binding Arguments, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                                                                <TextBox Text="{Binding Result, Mode=OneWay}"
+                                                                                         Style="{StaticResource MessageTextStyle}"
+                                                                                         Foreground="{DynamicResource Token.Text.Primary}"
+                                                                                         FontFamily="Consolas" FontSize="10"
+                                                                                         MaxHeight="120" VerticalScrollBarVisibility="Auto"
+                                                                                         Margin="0,3,0,0"
+                                                                                         Visibility="{Binding Result, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                                                            </StackPanel>
+                                                                        </Border>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+
+                                                            <!-- 流式打字指示：三点错峰脉冲 -->
+                                                            <StackPanel Orientation="Horizontal" Margin="2,6,0,0">
+                                                                <StackPanel.Style>
+                                                                    <Style TargetType="StackPanel">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsStreaming}" Value="True">
+                                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </StackPanel.Style>
+                                                                <Ellipse Style="{StaticResource StreamingDot1}"/>
+                                                                <Ellipse Style="{StaticResource StreamingDot2}" Margin="4,0,0,0"/>
+                                                                <Ellipse Style="{StaticResource StreamingDot3}" Margin="4,0,0,0"/>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm'}" FontSize="9.5"
+                                                               Foreground="{DynamicResource Token.Text.Muted}"
+                                                               Margin="10,2,0,0"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Grid>
+
+                                        <!-- ===== 工具响应：系统样式卡片 ===== -->
+                                        <Grid>
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Role}" Value="{x:Static copilot:MessageRole.Tool}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
+                                            <Border Style="{StaticResource ToolBubbleStyle}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <!-- 左侧强调条 -->
+                                                    <Border Grid.Column="0" CornerRadius="2" Margin="0,1,8,1"
+                                                            Background="{DynamicResource Token.Primary}"/>
+                                                    <StackPanel Grid.Column="1">
+                                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                                            <Path Width="11" Height="11" Data="{StaticResource Icon.Terminal}" Style="{StaticResource ToolbarIconPathStyle}" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                            <TextBlock Text="{Binding ToolName}" FontSize="10.5" FontWeight="SemiBold"
+                                                                       Foreground="{DynamicResource Token.Text.Primary}" VerticalAlignment="Center"/>
+                                                            <TextBlock Text=" · 响应结果" FontSize="9.5"
+                                                                       Foreground="{DynamicResource Token.Text.Muted}" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                        <TextBox Text="{Binding Content, Mode=OneWay}" Style="{StaticResource MessageTextStyle}"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- ===== 一体化智能输入坞 (Smart Input Dock) ===== -->
+                <Border Grid.Row="1"
+                        Margin="10,4,10,10"
+                        CornerRadius="12"
+                        Background="{DynamicResource Token.Surface.Card}"
+                        BorderBrush="{DynamicResource Token.Border.Subtle}"
+                        BorderThickness="1"
+                        AllowDrop="True"
+                        DragOver="OnImageDragOver"
+                        Drop="OnImageDrop">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.06" Direction="270" Color="#000000"/>
+                    </Border.Effect>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!-- 1. 快捷 Chip 药丸栏 -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- 2. 待发图片缩略预览条 -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- 3. 自适应多行文本输入框 -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- 4. 底部动作条（附件/截屏/快捷键 + 发送） -->
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- 1. 快捷 Chip 药丸栏 -->
+                        <Border Grid.Row="0" Padding="8,7,8,6"
+                                BorderBrush="{DynamicResource Token.Border.Subtle}" BorderThickness="0,0,0,1">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Command="{Binding QuickDiagnoseCommand}" Style="{StaticResource ChipButtonStyle}" ToolTip="快速诊断当前流程异常">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource Icon.Spark}" Fill="{DynamicResource Token.Primary}" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="故障诊断" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Command="{Binding QuickExecuteCommand}" Style="{StaticResource ChipButtonStyle}" ToolTip="一键运行并验证全流程">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource Icon.Run}" Fill="#10B981" Width="8" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="执行全流程" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Command="{Binding QuickCreateSchemeCommand}" Style="{StaticResource ChipButtonStyle}" ToolTip="生成常用视觉检测拓扑">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource Icon.Workflow}" Stroke="{DynamicResource Token.Primary}" Style="{StaticResource ToolbarIconPathStyle}" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="缺陷检测模板" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Command="{Binding QuickCaptureImageCommand}" Style="{StaticResource ChipButtonStyle}" ToolTip="截取当前主视口画面给 AI 分析">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Data="{StaticResource Icon.Image}" Stroke="{DynamicResource Token.Text.Secondary}" Style="{StaticResource ToolbarIconPathStyle}" Width="10" Height="10" Stretch="Uniform" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="截取视口" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Border>
+
+                        <!-- 2. 待发图片缩略图条（粘贴/拖放/📎 附加） -->
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding PendingInputImages}" Margin="10,8,10,0">
+                            <ItemsControl.Style>
+                                <Style TargetType="ItemsControl">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Self}}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ItemsControl.Style>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0,8,0">
+                                        <Border Width="56" Height="42" CornerRadius="6" ClipToBounds="True"
+                                                Background="{DynamicResource Token.Surface.Muted}"
+                                                BorderBrush="{DynamicResource Token.Border.Subtle}" BorderThickness="1">
+                                            <Image Source="{Binding}" Stretch="Uniform" Margin="2"/>
+                                        </Border>
+                                        <Button Width="16" Height="16"
+                                                HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-4,-4,0"
+                                                Background="{DynamicResource Token.Surface.Card}"
+                                                Foreground="{DynamicResource Token.Status.Danger}"
+                                                BorderThickness="1" BorderBrush="{DynamicResource Token.Border.Subtle}"
+                                                Cursor="Hand" Padding="0"
+                                                Command="{Binding DataContext.RemoveImageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="移除此图片">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                                            CornerRadius="8">
+                                                        <TextBlock Text="×" FontSize="11" FontWeight="Bold"
+                                                                   Foreground="{TemplateBinding Foreground}"
+                                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                   Margin="0,-1,0,0"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- 3. 自适应多行文本输入框 -->
+                        <Grid Grid.Row="2" Margin="10,6,10,4">
+                            <TextBox x:Name="InputTextBox"
+                                     Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
+                                     AcceptsReturn="True"
+                                     TextWrapping="Wrap"
+                                     MinHeight="40"
+                                     MaxHeight="120"
+                                     VerticalScrollBarVisibility="Auto"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     FontSize="12.5"
+                                     Padding="0,4"
+                                     Foreground="{DynamicResource Token.Text.Primary}"
+                                     CaretBrush="{DynamicResource Token.Text.Primary}"
+                                     PreviewKeyDown="InputTextBox_PreviewKeyDown"
+                                     KeyDown="InputTextBox_KeyDown"/>
+
+                            <!-- 水印占位符 -->
+                            <TextBlock Text="输入视觉需求或指令，可 Ctrl+V 粘贴 / 拖入图片…"
+                                       IsHitTestVisible="False"
+                                       Foreground="{DynamicResource Token.Text.Muted}"
+                                       FontSize="12"
+                                       Margin="2,5,0,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding InputText}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding InputText}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+
+                        <!-- 4. 底部动作条：附件 + 截屏 + 提示 + 发送按钮 -->
+                        <Grid Grid.Row="3" Margin="8,0,8,8">
+                            <Grid.ColumnDefinitions>
+                                <!-- 左侧工具：附件 / 截屏 -->
+                                <ColumnDefinition Width="Auto"/>
+                                <!-- 中间快捷键提示 -->
+                                <ColumnDefinition Width="*"/>
+                                <!-- 右侧发送胶囊 -->
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                <!-- 📎 附加图片 -->
+                                <Button Click="OnAttachImage"
+                                        Width="28" Height="28" Margin="0,0,4,0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        ToolTip="附加图片 (PNG/JPG，也可直接粘贴或拖入)">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6">
+                                                <Path Width="14" Height="14" Data="{StaticResource Icon.Image}" Style="{StaticResource ToolbarIconPathStyle}"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="{DynamicResource Token.Surface.Muted}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <!-- 📸 截取当前视口 -->
+                                <Button Command="{Binding QuickCaptureImageCommand}"
+                                        Width="28" Height="28"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        ToolTip="截取当前主视口画面给 AI 分析">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6">
+                                                <Path Width="13" Height="13" Data="{StaticResource Icon.Spark}" Fill="{DynamicResource Token.Text.Secondary}" Stretch="Uniform"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="{DynamicResource Token.Surface.Muted}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </StackPanel>
+
+                            <!-- 中间快捷键提示 -->
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="6,0,0,0"
+                                       FontSize="9.5" Foreground="{DynamicResource Token.Text.Muted}"
+                                       Text="Enter 发送 · Shift+Enter 换行"
+                                       TextTrimming="CharacterEllipsis"/>
+
+                            <!-- 发送胶囊按钮 -->
+                            <Button Grid.Column="2"
+                                    Command="{Binding SendCommand}"
+                                    Width="32" Height="32"
+                                    VerticalAlignment="Center"
+                                    Cursor="Hand"
+                                    ToolTip="发送 (Enter)">
+                                <Button.Effect>
+                                    <DropShadowEffect Color="#2563EB" BlurRadius="6" ShadowDepth="1" Opacity="0.3" Direction="270" />
+                                </Button.Effect>
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="circle" Width="32" Height="32" CornerRadius="8"
+                                                Background="{StaticResource UserBubbleBrush}">
+                                            <Grid>
+                                                <Path x:Name="icon" Data="{StaticResource Icon.Run}" Fill="White"
+                                                      Width="11" Height="11" Stretch="Uniform"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                      RenderTransformOrigin="0.5,0.5">
+                                                    <Path.RenderTransform>
+                                                        <RotateTransform Angle="90"/>
+                                                    </Path.RenderTransform>
+                                                </Path>
+                                                <TextBlock x:Name="waitText" Text="…" FontSize="13" Foreground="White"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="Collapsed"/>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="circle" Property="Opacity" Value="0.9"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="circle" Property="Background" Value="{DynamicResource Token.Surface.Muted}"/>
+                                                <Setter TargetName="circle" Property="BorderBrush" Value="{DynamicResource Token.Border.Subtle}"/>
+                                                <Setter TargetName="icon" Property="Visibility" Value="Collapsed"/>
+                                                <Setter TargetName="waitText" Property="Visibility" Value="Visible"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- ===== 模式 B：服务配置全景工作区（解决遮挡与排版断裂） ===== -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ScrollViewer.Style>
+                    <Style TargetType="ScrollViewer">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSettingsOpen}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ScrollViewer.Style>
+
+                <StackPanel Margin="14,12,14,16">
+                    <!-- 标题栏 -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Border Width="3" Height="14" CornerRadius="2" Margin="0,0,8,0" Background="{DynamicResource Token.Primary}"/>
+                        <TextBlock Text="AI 与 MCP 服务配置" FontSize="14" FontWeight="Bold"
+                                   Foreground="{DynamicResource Token.Text.Primary}"/>
+                    </StackPanel>
+
+                    <!-- 卡片一：内置 Copilot 大模型配置 -->
+                    <Border Style="{StaticResource SettingsCardStyle}">
+                        <StackPanel>
+                            <!-- 卡片顶头标签 -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <Path Width="13" Height="13" Data="{StaticResource Icon.Spark}" Fill="{DynamicResource Token.Primary}" Stretch="Uniform" VerticalAlignment="Center" Margin="0,0,7,0"/>
+                                <TextBlock Text="内置 Copilot 大模型" FontWeight="SemiBold" FontSize="12.5"
+                                           Foreground="{DynamicResource Token.Primary}"/>
+                            </StackPanel>
+
+                            <!-- ① 选择模型服务商（2x3 规整卡片网格，彻底解决单卡孤立） -->
+                            <TextBlock Text="① 选择模型服务商" Style="{StaticResource FieldLabelStyle}" Margin="0,0,0,6"/>
+                            <ItemsControl ItemsSource="{Binding ProviderPresets}" Margin="0,0,0,10">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Command="{Binding DataContext.SelectProviderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding Key}"
+                                                Cursor="Hand" Margin="0,0,6,6" Padding="0"
+                                                HorizontalAlignment="Stretch">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="card" CornerRadius="8" Padding="9,8"
+                                                            Background="{DynamicResource Token.Surface.Card}"
+                                                            BorderBrush="{DynamicResource Token.Border.Subtle}"
+                                                            BorderThickness="1">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <!-- Emoji 图标 -->
+                                                            <TextBlock Grid.Column="0" Text="{Binding Emoji}" FontSize="16"
+                                                                       VerticalAlignment="Center" Margin="0,0,8,0"/>
+
+                                                            <!-- 文字信息 -->
+                                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                                <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="11.5"
+                                                                           Foreground="{DynamicResource Token.Text.Primary}" TextTrimming="CharacterEllipsis"/>
+                                                                <TextBlock Text="{Binding Description}" FontSize="9.5"
+                                                                           Foreground="{DynamicResource Token.Text.Muted}"
+                                                                           TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                                                            </StackPanel>
+
+                                                            <!-- 选中指示小蓝标 -->
+                                                            <Border Grid.Column="2" x:Name="check" Width="16" Height="16" CornerRadius="8"
+                                                                    Background="{DynamicResource Token.Primary}"
+                                                                    Visibility="Collapsed" Margin="4,0,0,0">
+                                                                <Path Data="M3,7 L6,10 L12,4" Stroke="#FFFFFF" StrokeThickness="1.8"
+                                                                      Width="9" Height="9" Stretch="Uniform"
+                                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </Grid>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter TargetName="card" Property="BorderBrush" Value="{DynamicResource Token.Primary}"/>
+                                                            <Setter TargetName="card" Property="BorderThickness" Value="1.5"/>
+                                                            <Setter TargetName="card" Property="Background" Value="{DynamicResource Token.Surface.Card}"/>
+                                                            <Setter TargetName="check" Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="card" Property="Background" Value="{DynamicResource Token.Surface.Muted}"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <!-- ② 接口认证与密钥（置于模型选择之前，合乎逻辑且避免下拉遮挡） -->
+                            <StackPanel Visibility="{Binding KeyRequired, Converter={StaticResource BoolToVisConverter}}">
+                                <Grid Margin="0,4,0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="② API Key 密钥（DPAPI 加密存储）" Style="{StaticResource FieldLabelStyle}" Margin="0" VerticalAlignment="Center"/>
+                                    <Button Grid.Column="1" Content="🔑 获取密钥入口 ↗"
+                                            Command="{Binding OpenApiKeyPageCommand}"
+                                            Style="{StaticResource ControlStyle.Button.Ghost}"
+                                            Visibility="{Binding CurrentApiKeyUrl, Converter={StaticResource StringToVisibilityConverter}}"
+                                            VerticalAlignment="Center"/>
+                                </Grid>
+                                
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <PasswordBox x:Name="ApiKeyBox" Style="{StaticResource ControlStyle.PasswordBox}"
+                                                 PasswordChanged="ApiKeyBox_PasswordChanged"/>
+                                    <TextBox x:Name="ApiKeyPlainText" Style="{StaticResource ControlStyle.TextBox}" Visibility="Collapsed"
+                                             Text="{Binding Settings.ApiKey, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <ToggleButton x:Name="ApiKeyToggle" Grid.Column="1" Width="32" Margin="6,0,0,0"
+                                                  Click="ApiKeyToggle_Click" ToolTip="显示/隐藏明文密钥"
+                                                  Background="{DynamicResource Token.Surface.Card}"
+                                                  BorderBrush="{DynamicResource Token.Border.Subtle}"
+                                                  BorderThickness="1">
+                                        <ToggleButton.Template>
+                                            <ControlTemplate TargetType="ToggleButton">
+                                                <Border x:Name="bd" Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
+                                                        CornerRadius="7">
+                                                    <Path Width="14" Height="14" Data="{StaticResource Icon.Eye}"
+                                                          Stroke="{DynamicResource Token.Text.Secondary}"
+                                                          Style="{StaticResource ToolbarIconPathStyle}"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource Token.Primary}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="bd" Property="Background" Value="{DynamicResource Token.Surface.Muted}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </ToggleButton.Template>
+                                    </ToggleButton>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- ③ API 端点地址 -->
+                            <TextBlock Text="③ API 端点地址 (Base URL)" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox Text="{Binding Settings.BaseUrl, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource ControlStyle.TextBox}"
+                                     FontFamily="Consolas, Segoe UI" FontSize="11.5"
+                                     Margin="0,0,0,8"/>
+
+                            <!-- ④ 模型选择（独立全宽行：刷新按钮置于表头，下拉展开不再被右列切断） -->
+                            <Grid Margin="0,4,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="④ 视觉大模型选择" Style="{StaticResource FieldLabelStyle}" Margin="0"/>
+                                    <!-- 动态提示：✓ 已获取 11 个可用模型 -->
+                                    <Border Margin="8,0,0,0" CornerRadius="4" Padding="6,1"
+                                            Background="{DynamicResource Token.Surface.Muted}"
+                                            Visibility="{Binding ModelsFetchHint, Converter={StaticResource StringToVisibilityConverter}}">
+                                        <TextBlock Text="{Binding ModelsFetchHint}" FontSize="10" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Token.Text.Muted}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ModelsHintState}" Value="Success">
+                                                            <Setter Property="Foreground" Value="#10B981"/>
+                                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding ModelsHintState}" Value="Error">
+                                                            <Setter Property="Foreground" Value="{DynamicResource Token.Status.Danger}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+                                </StackPanel>
+                                <Button Grid.Column="1"
+                                        Content="{Binding FetchModelsButtonText}"
+                                        Command="{Binding FetchModelsCommand}"
+                                        Style="{StaticResource ControlStyle.Button.Secondary}"
+                                        Padding="10,4" Height="26" FontSize="11"
+                                        ToolTip="从服务商接口重新拉取当前 Key 可用的最新模型列表"/>
+                            </Grid>
+
+                            <!-- 全宽 ComboBox（彻底解决 DropDown 遮挡局部导致右侧断裂的严重问题） -->
+                            <ComboBox IsEditable="True"
+                                      ItemsSource="{Binding AvailableModels}"
+                                      Text="{Binding Settings.ModelName, UpdateSourceTrigger=PropertyChanged}"
+                                      StaysOpenOnEdit="False"
+                                      MaxDropDownHeight="200"
+                                      VerticalContentAlignment="Center"
+                                      FontSize="12" Padding="9,7"
+                                      HorizontalAlignment="Stretch"
+                                      Background="{DynamicResource Token.Surface.Card}"
+                                      Foreground="{DynamicResource Token.Text.Primary}"
+                                      BorderBrush="{DynamicResource Token.Border.Subtle}"
+                                      BorderThickness="1"
+                                      Margin="0,0,0,10"
+                                      ToolTip="下拉选择可用模型，也可直接手动输入模型名"/>
+
+                            <!-- ⑤ 运行参数 -->
+                            <Border Background="{DynamicResource Token.Surface.Muted}" CornerRadius="8" Padding="10,8" Margin="0,2,0,4">
+                                <StackPanel>
+                                    <!-- 单轮工具调用上限 -->
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="68"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="单轮最大工具调用轮次" FontSize="11" Foreground="{DynamicResource Token.Text.Secondary}"
+                                                   VerticalAlignment="Center"
+                                                   ToolTip="AI 单轮对话最多执行多少轮工具调用（默认 30）；到达上限后发送「继续」可接力完成"/>
+                                        <TextBox Grid.Column="1" Text="{Binding Settings.MaxToolLoops, UpdateSourceTrigger=PropertyChanged}"
+                                                 Style="{StaticResource ControlStyle.TextBox}" TextAlignment="Center" Padding="4,4"/>
+                                    </Grid>
+
+                                    <!-- 视觉多模态开关 -->
+                                    <CheckBox IsThreeState="True"
+                                              IsChecked="{Binding Settings.SupportsVisionOverride, Mode=TwoWay}"
+                                              Content="视觉输入（截图分析）：中间态=自动；勾选=强制开；取消=关"
+                                              FontSize="11" Foreground="{DynamicResource Token.Text.Secondary}"
+                                              ToolTip="自动检测按模型名判断（glm-4v/gpt-4o 等为视觉模型）。模型名无法识别时可手动指定"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 卡片二：内嵌 MCP Server 协同 -->
+                    <Border Style="{StaticResource SettingsCardStyle}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                <Path Width="13" Height="13" Data="{StaticResource Icon.Plug}" Style="{StaticResource ToolbarIconPathStyle}" VerticalAlignment="Center" Margin="0,0,7,0"/>
+                                <TextBlock Text="内嵌 MCP Server 协同" FontWeight="SemiBold" FontSize="12.5"
+                                           Foreground="{DynamicResource Token.Primary}"/>
+                            </StackPanel>
+
+                            <CheckBox Content="随程序自动启动 MCP Server" IsChecked="{Binding Settings.IsMcpServerEnabled}" Margin="0,0,0,6" FontSize="11"/>
+                            <CheckBox Content="强制 Token 鉴权（推荐：防止本机外部进程未授权调用）" IsChecked="{Binding Settings.RequireMcpToken}" Margin="0,0,0,8" FontSize="11"/>
+
+                            <TextBlock Text="监听端口（默认 8765）" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox Text="{Binding Settings.McpPort, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ControlStyle.TextBox}" Margin="0,0,0,6"/>
+
+                            <TextBlock Text="MCP 访问令牌 (Token)" Style="{StaticResource FieldLabelStyle}"/>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding McpToken, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource ControlStyle.TextBox}" Margin="0,0,6,0" FontFamily="Consolas" FontSize="11"/>
+                                <Button Grid.Column="1" Content="复制" Command="{Binding CopyMcpTokenCommand}"
+                                        Style="{StaticResource ControlStyle.Button.Secondary}"/>
+                            </Grid>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,2,0,10">
+                                <Button Content="{Binding ToggleMcpText}"
+                                        Command="{Binding ToggleMcpCommand}"
+                                        Style="{StaticResource ControlStyle.Button.Secondary}" Margin="0,0,10,0"/>
+                                <TextBlock Text="{Binding McpStatusText}" VerticalAlignment="Center" FontSize="11"
+                                           Foreground="{DynamicResource Token.Text.Muted}"/>
+                            </StackPanel>
+
+                            <Button Content="复制 Cursor / IDE MCP 配置（含鉴权头）" Command="{Binding CopyIdeMcpCommand}"
+                                    Style="{StaticResource ControlStyle.Button.Secondary}" HorizontalAlignment="Stretch" Margin="0,0,0,6"/>
+                            <Button Content="复制 Claude Code CLI 挂载命令" Command="{Binding CopyMcpCliCommand}"
+                                    Style="{StaticResource ControlStyle.Button.Secondary}" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 卡片三：连通性测试与完成动作栏 -->
+                    <Border Style="{StaticResource SettingsCardStyle}" Margin="0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <!-- 测试连通性行 -->
+                            <Grid Grid.Row="0" Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Content="⚡ 测试当前配置连通性"
+                                        Command="{Binding TestConnectionCommand}"
+                                        Style="{StaticResource ControlStyle.Button.Secondary}"
+                                        Padding="12,6"/>
+                                <TextBlock Grid.Column="1" Text="{Binding TestResultText}"
+                                           VerticalAlignment="Center" Margin="10,0,0,0" FontSize="11"
+                                           TextTrimming="CharacterEllipsis">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{DynamicResource Token.Text.Muted}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding TestPassed}" Value="True">
+                                                    <Setter Property="Foreground" Value="#10B981"/>
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding TestPassed}" Value="False">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Token.Status.Danger}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+
+                            <Separator Grid.Row="0" VerticalAlignment="Bottom" Background="{DynamicResource Token.Border.Subtle}" Margin="0,0,0,-4"/>
+
+                            <!-- 完成与自动保存提示 -->
+                            <Grid Grid.Row="1" Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="10.5"
+                                           Foreground="#10B981" Text="{Binding AutoSaveHint}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="{Binding AutoSaveHint, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <Button Grid.Column="1" Content="完成并返回对话" Command="{Binding ToggleSettingsCommand}"
+                                        Style="{StaticResource ControlStyle.Button.Primary}" Padding="18,6"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

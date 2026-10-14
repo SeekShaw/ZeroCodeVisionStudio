@@ -21,6 +21,13 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+/HalconVisionStudio.exe
+/*.dll
+/*.pdb
+/*.deps.json
+/*.runtimeconfig.json
+/de/
+/runtimes/
 x64/
 x86/
 [Ww][Ii][Nn]32/

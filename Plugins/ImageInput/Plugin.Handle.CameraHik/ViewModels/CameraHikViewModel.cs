@@ -5,15 +5,15 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using AAAandSphinx.Vision.SDK;
-using HalconVisionStudio.Shared;
+using ZeroCode.Vision.SDK;
+using ZeroCodeVisionStudio.Shared;
 using Prism.Commands;
 
 namespace Plugin.Handle.CameraHik.ViewModels
 {
     public class CameraHikViewModel : HandleDialogBase
     {
-        private AAAandSphinx.Vision.SDK.HK.CameraHik _camera;
+        private ZeroCode.Vision.SDK.HK.CameraHik _camera;
         private CameraHikParameter _parameter;
         private IHandle _handle;
 
@@ -212,7 +212,7 @@ namespace Plugin.Handle.CameraHik.ViewModels
 
             try
             {
-                _handle.Handle();
+                _handle.Execute();
                 CameraStatus = "采图成功，流程已执行";
             }
             catch (Exception ex)
@@ -252,7 +252,7 @@ namespace Plugin.Handle.CameraHik.ViewModels
                 CameraStatus = "正在枚举相机...";
                 AvailableCameras.Clear();
 
-                using (var tempCamera = new AAAandSphinx.Vision.SDK.HK.CameraHik())
+                using (var tempCamera = new ZeroCode.Vision.SDK.HK.CameraHik())
                 {
                     var devices = tempCamera.GetCameraEnum();
                     foreach (var device in devices)
@@ -293,7 +293,7 @@ namespace Plugin.Handle.CameraHik.ViewModels
                 CameraStatus = "正在打开相机...";
                 CleanupCamera();
 
-                _camera = new AAAandSphinx.Vision.SDK.HK.CameraHik();
+                _camera = new ZeroCode.Vision.SDK.HK.CameraHik();
                 _camera.ImageCallbackEvent += OnCameraImageCallback;
                 var result = _camera.InitizeDevice(SelectedCameraSN);
 

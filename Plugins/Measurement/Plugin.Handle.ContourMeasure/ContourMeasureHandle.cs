@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using Plugin.Handle.ContourMeasure.Views;
 
 namespace Plugin.Handle.ContourMeasure
@@ -76,7 +76,7 @@ namespace Plugin.Handle.ContourMeasure
     /// <summary>
     /// 轮廓长度测量算子。
     /// </summary>
-    [Handle("轮廓长度", "ContourLength", "计算XLD轮廓的总长度并支持物理标定换算。", Common.HandleType_Measurement)]
+    [Handle("轮廓长度", "ContourLength", "计算XLD轮廓的总长度并支持物理标定换算。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class ContourLengthHandle : ContourMeasureBase
     {
         public ContourLengthHandle(IDialogService dialogService) : base(dialogService)
@@ -126,7 +126,7 @@ namespace Plugin.Handle.ContourMeasure
     /// <summary>
     /// 区域周长测量算子。
     /// </summary>
-    [Handle("区域周长", "ContourPerimeter", "计算闭合区域或边界的周长（像素与物理单位）。", Common.HandleType_Measurement)]
+    [Handle("区域周长", "ContourPerimeter", "计算闭合区域或边界的周长（像素与物理单位）。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class ContourPerimeterHandle : ContourMeasureBase
     {
         public const string PerimeterSlotKey = "Perimeter";
@@ -171,7 +171,7 @@ namespace Plugin.Handle.ContourMeasure
     /// <summary>
     /// 轮廓综合特征测量算子。
     /// </summary>
-    [Handle("轮廓综合特征", "ContourFeatures", "综合提取XLD轮廓的长度、面积、圆度及凸性等特征。", Common.HandleType_Measurement)]
+    [Handle("轮廓综合特征", "ContourFeatures", "综合提取XLD轮廓的长度、面积、圆度及凸性等特征。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class ContourFeaturesHandle : ContourMeasureBase
     {
         public const string ContourAreaSlotKey = "ContourArea";

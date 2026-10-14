@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using Microsoft.Win32;
 using Plugin.Handle.ReadImage.Model;
 

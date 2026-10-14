@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.TopHat
 {
-    [Handle("顶帽变换", "TopHat", "突出图像中的明亮细小结构。", Common.HandleType_Preprocessing)]
+    [Handle("顶帽变换", "TopHat", "突出图像中的明亮细小结构。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class TopHatHandle : ParameterHandleBase<TopHatParameter>, IHandleDataSlots
     {
         public TopHatHandle(IDialogService dialogService) : base(dialogService)

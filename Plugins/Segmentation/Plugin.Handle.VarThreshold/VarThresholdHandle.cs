@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.VarThreshold
 {
-    [Handle("局部方差阈值", "VarThreshold", "根据局部均值和偏差分割缺陷。", Common.HandleType_Segmentation)]
+    [Handle("局部方差阈值", "VarThreshold", "根据局部均值和偏差分割缺陷。", Common.HandleType_Segmentation, OperatorBackend = OperatorBackend.OpenCV)]
     public class VarThresholdHandle : ParameterHandleBase<VarThresholdParameter>, IHandleDataSlots
     {
         public VarThresholdHandle(IDialogService dialogService) : base(dialogService)

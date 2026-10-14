@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.ClosingRectangle
 {
-    [Handle("矩形闭运算", "ClosingRectangle", "使用矩形结构元素对区域执行闭运算。", Common.HandleType_RegionProcessing)]
+    [Handle("矩形闭运算", "ClosingRectangle", "使用矩形结构元素对区域执行闭运算。", Common.HandleType_RegionProcessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class ClosingRectangleHandle : ParameterHandleBase<ClosingRectangleParameter>, IHandleDataSlots
     {
         public ClosingRectangleHandle(IDialogService dialogService) : base(dialogService)

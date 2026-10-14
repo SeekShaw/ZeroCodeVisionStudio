@@ -1,6 +1,6 @@
 using System;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.AngleMeasure.ViewModels
 {

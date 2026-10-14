@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.EdgesSubPix
 {
-    [Handle("亚像素边缘", "EdgesSubPix", "提取亚像素精度的 XLD 边缘。", Common.HandleType_Segmentation)]
+    [Handle("亚像素边缘", "EdgesSubPix", "提取亚像素精度的 XLD 边缘。", Common.HandleType_Segmentation, OperatorBackend = OperatorBackend.Halcon)]
     public class EdgesSubPixHandle : ParameterHandleBase<EdgesSubPixParameter>, IHandleDataSlots
     {
         public EdgesSubPixHandle(IDialogService dialogService) : base(dialogService)

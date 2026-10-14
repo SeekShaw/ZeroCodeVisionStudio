@@ -1,9 +1,9 @@
 ﻿using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.ReadShapeModel
 {
-    [Handle("读取形状模板", "ReadShapeModel", "加载 HALCON 形状模板文件。", Common.HandleType_ShapeMatching)]
+    [Handle("读取形状模板", "ReadShapeModel", "加载 HALCON 形状模板文件。", Common.HandleType_ShapeMatching, OperatorBackend = OperatorBackend.Halcon)]
     public class ReadShapeModelHandle : ParameterHandleBase<ReadShapeModelParameter>, IHandleDataSlots, IHandleRuntimeResourceOwner
     {
         private HTuple ownedModelId;

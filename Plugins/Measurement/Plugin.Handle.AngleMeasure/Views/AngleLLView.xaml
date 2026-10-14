@@ -1,10 +1,10 @@
-﻿<UserControl
+<UserControl
     x:Class="Plugin.Handle.AngleMeasure.Views.AngleLLView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:shared="clr-namespace:HalconVisionStudio.Shared;assembly=HalconVisionStudio.Shared"
+    xmlns:shared="clr-namespace:ZeroCodeVisionStudio.Shared;assembly=ZeroCodeVisionStudio.Shared"
     xmlns:vm="clr-namespace:Plugin.Handle.AngleMeasure.ViewModels"
     d:DataContext="{d:DesignInstance Type={x:Type vm:AngleLLViewModel}}"
     d:DesignHeight="600"
@@ -15,7 +15,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- 共享插件样式：按钮/输入框/文本/卡片，主题感知（DynamicResource Token.*） -->
-                <ResourceDictionary Source="pack://application:,,,/HalconVisionStudio.Shared;component/Themes/PluginDialogStyles.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/ZeroCodeVisionStudio.Shared;component/Themes/PluginDialogStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

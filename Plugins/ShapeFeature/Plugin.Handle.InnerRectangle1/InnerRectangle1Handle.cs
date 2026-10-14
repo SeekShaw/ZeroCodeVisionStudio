@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.InnerRectangle1
 {
-    [Handle("最大内接矩形", "InnerRectangle1", "求解区域的水平最大内接矩形并输出矩形区域，支持尺寸标定换算。", Common.HandleType_ShapeFeature)]
+    [Handle("最大内接矩形", "InnerRectangle1", "求解区域的水平最大内接矩形并输出矩形区域，支持尺寸标定换算。", Common.HandleType_ShapeFeature, OperatorBackend = OperatorBackend.OpenCV)]
     public class InnerRectangle1Handle : ParameterHandleBase<FeatureMeasureParameter>, IHandleDataSlots
     {
         public InnerRectangle1Handle(IDialogService dialogService) : base(dialogService)

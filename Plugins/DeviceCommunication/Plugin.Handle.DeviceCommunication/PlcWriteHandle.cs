@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
-using HalconVisionStudio.Shared;
-using HalconVisionStudio.Shared.Communication;
+using ZeroCodeVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared.Communication;
 
 namespace Plugin.Handle.DeviceCommunication
 {
@@ -41,7 +41,7 @@ namespace Plugin.Handle.DeviceCommunication
     /// PLC 写入算子：通过通讯驱动中心的长连接 PLC 驱动（西门子 S7 / 三菱 MC / 欧姆龙 FINS）
     /// 写入位/字/双字/浮点值，写入值支持 $Key$ 上游插值。
     /// </summary>
-    [Handle("PLC写入", "PlcWrite", "通过通讯驱动中心的长连接 PLC 驱动（西门子 S7 / 三菱 MC / 欧姆龙 FINS）写入位/字/双字/浮点值。写入值支持 $Key$ 上游值插值。", "设备通讯")]
+    [Handle("PLC写入", "PlcWrite", "通过通讯驱动中心的长连接 PLC 驱动（西门子 S7 / 三菱 MC / 欧姆龙 FINS）写入位/字/双字/浮点值。写入值支持 $Key$ 上游值插值。", "设备通讯", OperatorBackend = OperatorBackend.Hybrid)]
     public class PlcWriteHandle : ParameterHandleBase<PlcWriteParam>
     {
         public PlcWriteHandle(IDialogService dialogService) : base(dialogService)

@@ -1,4 +1,4 @@
-using AAAandSphinx.Vision.SDK.Halcon;
+﻿using ZeroCode.Vision.SDK.Halcon;
 
 namespace Demo.SDK.Halcon
 {

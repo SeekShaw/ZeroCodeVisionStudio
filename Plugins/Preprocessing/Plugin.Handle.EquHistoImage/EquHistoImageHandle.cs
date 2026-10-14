@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.EquHistoImage
 {
-    [Handle("直方图均衡化", "EquHistoImage", "通过直方图均衡化增强低对比度图像细节。", Common.HandleType_Preprocessing)]
+    [Handle("直方图均衡化", "EquHistoImage", "通过直方图均衡化增强低对比度图像细节。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class EquHistoImageHandle : HandleBase, IHandleDataSlots
     {
         public EquHistoImageHandle(IDialogService dialogService) : base(dialogService)

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Windows.Media.Imaging;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.ReadImage.Model
 {

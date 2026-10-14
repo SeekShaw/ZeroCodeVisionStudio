@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.LocalThreshold
 {
-    [Handle("局部阈值分割", "LocalThreshold", "基于局部统计的自适应阈值分割算子。", Common.HandleType_Segmentation)]
+    [Handle("局部阈值分割", "LocalThreshold", "基于局部统计的自适应阈值分割算子。", Common.HandleType_Segmentation, OperatorBackend = OperatorBackend.OpenCV)]
     public class LocalThresholdHandle : ParameterHandleBase<LocalThresholdParameter>, IHandleDataSlots
     {
         public LocalThresholdHandle(IDialogService dialogService) : base(dialogService) { }

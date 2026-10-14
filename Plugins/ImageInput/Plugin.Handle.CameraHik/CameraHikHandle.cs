@@ -1,20 +1,20 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
-using AAAandSphinx.Vision.SDK;
-using HalconVisionStudio.Shared;
+using ZeroCode.Vision.SDK;
+using ZeroCodeVisionStudio.Shared;
 using HalconDotNet;
 using Plugin.Handle.CameraHik.Views;
 
 namespace Plugin.Handle.CameraHik
 {
-    [Handle("海康相机采图", "CameraHik", "从海康相机采集图像。支持枚举并选择相机、打开/关闭设备、设置曝光/增益/触发模式等参数，并在对话框中实时预览采图图像。", Common.HandleType_ImageInput)]
+    [Handle("海康相机采图", "CameraHik", "从海康相机采集图像。支持枚举并选择相机、打开/关闭设备、设置曝光/增益/触发模式等参数，并在对话框中实时预览采图图像。", Common.HandleType_ImageInput, OperatorBackend = OperatorBackend.OpenCV)]
     public class CameraHikHandle : HandleBase, IHandleDataSlots
     {
-        private AAAandSphinx.Vision.SDK.HK.CameraHik camera;
+        private ZeroCode.Vision.SDK.HK.CameraHik camera;
 
         /// <summary>当前已初始化设备对应的目标序列号（null=参数中未指定），用于设备缓存判断。</summary>
         private string initializedTargetSN;
@@ -52,7 +52,7 @@ namespace Plugin.Handle.CameraHik
 
             if (camera == null)
             {
-                camera = new AAAandSphinx.Vision.SDK.HK.CameraHik();
+                camera = new ZeroCode.Vision.SDK.HK.CameraHik();
             }
 
             InitializeCamera(parameter);

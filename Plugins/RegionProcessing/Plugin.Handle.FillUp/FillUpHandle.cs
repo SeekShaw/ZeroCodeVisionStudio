@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.FillUp
 {
-    [Handle("区域填充", "FillUp", "填充缺陷区域内部的孔洞。", Common.HandleType_RegionProcessing)]
+    [Handle("区域填充", "FillUp", "填充缺陷区域内部的孔洞。", Common.HandleType_RegionProcessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class FillUpHandle : HandleBase, IHandleDataSlots
     {
         public FillUpHandle(IDialogService dialogService) : base(dialogService)

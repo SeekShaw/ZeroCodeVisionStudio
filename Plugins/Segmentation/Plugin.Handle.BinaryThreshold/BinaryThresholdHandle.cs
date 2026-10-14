@@ -1,10 +1,10 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 using Plugin.Handle.BinaryThreshold.Views;
 
 namespace Plugin.Handle.BinaryThreshold
 {
-    [Handle("二值化", "BinaryThreshold", "将输入图像转换为二值区域。", Common.HandleType_Segmentation)]
+    [Handle("二值化", "BinaryThreshold", "将输入图像转换为二值区域。", Common.HandleType_Segmentation, OperatorBackend = OperatorBackend.OpenCV)]
     public class BinaryThresholdHandle : HandleBase, IHandleDataSlots
     {
         private readonly BinaryThresholdParameter binaryParameter;

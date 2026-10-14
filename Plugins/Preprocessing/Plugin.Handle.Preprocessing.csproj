@@ -11,11 +11,12 @@
   <ItemGroup>
     <PackageReference Include="Prism.Core" Version="9.0.537" />
     <PackageReference Include="Prism.Wpf" Version="9.0.537" />
+    <PackageReference Include="OpenCvSharp4" Version="4.10.0.20240616" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\HalconVisionStudio.Core\HalconVisionStudio.Core.csproj" />
-    <ProjectReference Include="..\..\HalconVisionStudio.Shared\HalconVisionStudio.Shared.csproj" />
+    <ProjectReference Include="..\..\ZeroCodeVisionStudio.Core\ZeroCodeVisionStudio.Core.csproj" />
+    <ProjectReference Include="..\..\ZeroCodeVisionStudio.Shared\ZeroCodeVisionStudio.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

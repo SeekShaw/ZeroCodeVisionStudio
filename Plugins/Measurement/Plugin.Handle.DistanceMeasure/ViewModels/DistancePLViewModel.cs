@@ -1,6 +1,6 @@
 using System;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using Prism.Commands;
 
 namespace Plugin.Handle.DistanceMeasure.ViewModels

@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AAAandSphinx.Vision.SDK.Halcon\AAAandSphinx.Vision.SDK.Halcon.csproj" />
+    <ProjectReference Include="..\ZeroCode.Vision.SDK.Halcon\ZeroCode.Vision.SDK.Halcon.csproj" />
   </ItemGroup>
 
 </Project>

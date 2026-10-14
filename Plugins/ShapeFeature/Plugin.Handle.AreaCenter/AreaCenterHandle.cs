@@ -1,9 +1,9 @@
 ﻿using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.AreaCenter
 {
-    [Handle("区域面积与重心", "AreaCenter", "计算区域的像素面积和几何重心坐标，支持标定换算，输出透传原始区域。", Common.HandleType_ShapeFeature)]
+    [Handle("区域面积与重心", "AreaCenter", "计算区域的像素面积和几何重心坐标，支持标定换算，输出透传原始区域。", Common.HandleType_ShapeFeature, OperatorBackend = OperatorBackend.OpenCV)]
     public class AreaCenterHandle : ParameterHandleBase<FeatureMeasureParameter>, IHandleDataSlots
     {
         public AreaCenterHandle(IDialogService dialogService) : base(dialogService)

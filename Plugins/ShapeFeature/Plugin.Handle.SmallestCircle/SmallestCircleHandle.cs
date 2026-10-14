@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.SmallestCircle
 {
-    [Handle("最小外接圆", "SmallestCircle", "求解区域的最小外接圆并输出圆形区域，支持标定半径换算。", Common.HandleType_ShapeFeature)]
+    [Handle("最小外接圆", "SmallestCircle", "求解区域的最小外接圆并输出圆形区域，支持标定半径换算。", Common.HandleType_ShapeFeature, OperatorBackend = OperatorBackend.OpenCV)]
     public class SmallestCircleHandle : ParameterHandleBase<FeatureMeasureParameter>, IHandleDataSlots
     {
         public SmallestCircleHandle(IDialogService dialogService) : base(dialogService)

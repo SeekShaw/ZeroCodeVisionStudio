@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.AreaCenterGray
 {
-    [Handle("灰度加权重心", "AreaCenterGray", "以灰度值为权重计算区域的重心坐标，支持标定换算，适用于斑点定位。", Common.HandleType_GrayFeature)]
+    [Handle("灰度加权重心", "AreaCenterGray", "以灰度值为权重计算区域的重心坐标，支持标定换算，适用于斑点定位。", Common.HandleType_GrayFeature, OperatorBackend = OperatorBackend.OpenCV)]
     public class AreaCenterGrayHandle : ParameterHandleBase<FeatureMeasureParameter>, IHandleDataSlots
     {
         public AreaCenterGrayHandle(IDialogService dialogService) : base(dialogService)

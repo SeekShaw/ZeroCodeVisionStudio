@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using Plugin.Handle.DefectMeasure.Views;
 
 namespace Plugin.Handle.DefectMeasure
 {
-    [Handle("缺陷测量", "DefectMeasure", "统计缺陷区域、过滤噪点并判定 OK 或 NG。", Common.HandleType_Measurement)]
+    [Handle("缺陷测量", "DefectMeasure", "统计缺陷区域、过滤噪点并判定 OK 或 NG。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class DefectMeasureHandle : HandleBase, IHandleDataSlots
     {
         private readonly DefectMeasureParameter parameter;

@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using Plugin.Handle.SelectShape.Views;
 
 namespace Plugin.Handle.SelectShape
 {
-    [Handle("形状筛选", "SelectShape", "根据形状特征筛选连通缺陷候选区域。", Common.HandleType_RegionProcessing)]
+    [Handle("形状筛选", "SelectShape", "根据形状特征筛选连通缺陷候选区域。", Common.HandleType_RegionProcessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class SelectShapeHandle : HandleBase, IHandleDataSlots
     {
         private readonly SelectShapeParameter parameter;

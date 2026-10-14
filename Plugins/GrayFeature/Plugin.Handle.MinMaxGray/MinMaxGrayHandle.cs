@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.MinMaxGray
 {
-    [Handle("灰度最值", "MinMaxGray", "统计区域内的最小灰度值、最大灰度值和灰度范围（支持抗噪过滤百分比）。", Common.HandleType_GrayFeature)]
+    [Handle("灰度最值", "MinMaxGray", "统计区域内的最小灰度值、最大灰度值和灰度范围（支持抗噪过滤百分比）。", Common.HandleType_GrayFeature, OperatorBackend = OperatorBackend.OpenCV)]
     public class MinMaxGrayHandle : ParameterHandleBase<MinMaxGrayParameter>, IHandleDataSlots
     {
         public MinMaxGrayHandle(IDialogService dialogService) : base(dialogService)

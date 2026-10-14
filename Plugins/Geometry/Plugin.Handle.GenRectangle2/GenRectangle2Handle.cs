@@ -1,9 +1,9 @@
-using HalconVisionStudio.Shared;
+﻿using ZeroCodeVisionStudio.Shared;
 using HalconDotNet;
 
 namespace Plugin.Handle.GenRectangle2
 {
-    [Handle("生成矩形2", "GenRectangle2", "根据中心坐标、角度和半边长生成可旋转的矩形区域。支持交互式绘制。", Common.HandleType_Geometry)]
+    [Handle("生成矩形2", "GenRectangle2", "根据中心坐标、角度和半边长生成可旋转的矩形区域。支持交互式绘制。", Common.HandleType_Geometry, OperatorBackend = OperatorBackend.OpenCV)]
     public class GenRectangle2Handle : ParameterHandleBase<GenRectangle2Parameter>
     {
         public GenRectangle2Handle(IDialogService dialogService) : base(dialogService) { }

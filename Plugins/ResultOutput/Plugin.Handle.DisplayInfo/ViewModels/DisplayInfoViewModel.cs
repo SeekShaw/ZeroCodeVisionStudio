@@ -1,5 +1,5 @@
 using System.Collections.Specialized;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.DisplayInfo.ViewModels
 {

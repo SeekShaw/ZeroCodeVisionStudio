@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Illuminate
 {
-    [Handle("光照校正", "Illuminate", "在分割前校正不均匀光照。", Common.HandleType_Preprocessing)]
+    [Handle("光照校正", "Illuminate", "在分割前校正不均匀光照。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class IlluminateHandle : ParameterHandleBase<IlluminateParameter>, IHandleDataSlots
     {
         public IlluminateHandle(IDialogService dialogService) : base(dialogService)

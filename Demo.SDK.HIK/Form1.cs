@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Drawing.Imaging;
-using AAAandSphinx.Vision.SDK;
-using AAAandSphinx.Vision.SDK.HK;
+using ZeroCode.Vision.SDK;
+using ZeroCode.Vision.SDK.HK;
 using HalconDotNet;
 
 namespace Demo.SDK.HIK;

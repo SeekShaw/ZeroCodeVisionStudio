@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Logic
 {
@@ -22,7 +22,7 @@ namespace Plugin.Handle.Logic
     /// 下游节点通过「执行条件」挂接对应分支（$TrueBranch$==true / $FalseBranch$==true），
     /// 实现 OK/NG 两段子流程各走各的（如 NG 才保存缺陷图）。
     /// </summary>
-    [Handle("条件分流", "ConditionalBranch", "把一路布尔判定拆为 True/False 两路输出；下游节点在右键「执行条件」中绑定 $TrueBranch$/$FalseBranch$ 实现分支子流程（NG 才保存图像等）。", Common.HandleType_Logic)]
+    [Handle("条件分流", "ConditionalBranch", "把一路布尔判定拆为 True/False 两路输出；下游节点在右键「执行条件」中绑定 $TrueBranch$/$FalseBranch$ 实现分支子流程（NG 才保存图像等）。", Common.HandleType_Logic, OperatorBackend = OperatorBackend.Hybrid)]
     public class ConditionalBranchHandle : ParameterHandleBase<ConditionalBranchParameter>, IHandleDataSlots
     {
         private const string ConditionInputKey = "logic.branch.condition";
@@ -85,7 +85,7 @@ namespace Plugin.Handle.Logic
     /// 边沿触发：只在输入信号发生指定跳变的那一轮输出真，其余轮次输出假。
     /// 首轮执行只记录当前值不触发。配合节点执行条件实现"信号变为 ON 时才执行一次"。
     /// </summary>
-    [Handle("边沿触发", "EdgeTrigger", "只在输入信号发生指定跳变（上升/下降沿）的那一轮输出真，其余轮次为假。用于 PLC 复位信号只回写一次、新工件沿触发首件检测等。", Common.HandleType_Logic)]
+    [Handle("边沿触发", "EdgeTrigger", "只在输入信号发生指定跳变（上升/下降沿）的那一轮输出真，其余轮次为假。用于 PLC 复位信号只回写一次、新工件沿触发首件检测等。", Common.HandleType_Logic, OperatorBackend = OperatorBackend.Hybrid)]
     public class EdgeTriggerHandle : ParameterHandleBase<EdgeTriggerParameter>, IHandleDataSlots
     {
         private const string SignalInputKey = "logic.edge.signal";
@@ -164,7 +164,7 @@ namespace Plugin.Handle.Logic
     /// 抽检判定：首 N 件必检 + 之后每 M 件抽 1 件，输出本轮"是否需要检测"。
     /// 下游检测链路的节点用执行条件 `$ShouldInspect$ == true` 挂接即得"首件全检转抽检"节拍。
     /// </summary>
-    [Handle("抽检判定", "SamplingGate", "首 N 件必检 + 之后每 M 件抽 1 件的节拍门控，输出本轮是否需要检测（ShouldInspect）。换型首件确认后自动转抽检提节拍。", Common.HandleType_Logic)]
+    [Handle("抽检判定", "SamplingGate", "首 N 件必检 + 之后每 M 件抽 1 件的节拍门控，输出本轮是否需要检测（ShouldInspect）。换型首件确认后自动转抽检提节拍。", Common.HandleType_Logic, OperatorBackend = OperatorBackend.Hybrid)]
     public class SamplingGateHandle : ParameterHandleBase<SamplingGateParameter>, IHandleDataSlots
     {
         private const string ResetInputKey = "logic.sampling.reset";

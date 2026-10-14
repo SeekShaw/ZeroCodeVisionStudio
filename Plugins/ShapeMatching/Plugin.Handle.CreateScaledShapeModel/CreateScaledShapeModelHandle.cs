@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.CreateScaledShapeModel
 {
-    [Handle("创建缩放形状模板", "CreateScaledShapeModel", "创建支持等比例缩放搜索的 HALCON 形状模板。", Common.HandleType_ShapeMatching)]
+    [Handle("创建缩放形状模板", "CreateScaledShapeModel", "创建支持等比例缩放搜索的 HALCON 形状模板。", Common.HandleType_ShapeMatching, OperatorBackend = OperatorBackend.Halcon)]
     public class CreateScaledShapeModelHandle : ParameterHandleBase<CreateScaledShapeModelParameter>, IHandleDataSlots, IHandleRuntimeResourceOwner
     {
         private HTuple ownedModelId;

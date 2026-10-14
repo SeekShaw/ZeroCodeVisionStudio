@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.ClearShapeModel
 {
-    [Handle("释放形状模板", "ClearShapeModel", "释放或清空当前流程中的 HALCON 形状模板。", Common.HandleType_ShapeMatching)]
+    [Handle("释放形状模板", "ClearShapeModel", "释放或清空当前流程中的 HALCON 形状模板。", Common.HandleType_ShapeMatching, OperatorBackend = OperatorBackend.Halcon)]
     public class ClearShapeModelHandle : ParameterHandleBase<ClearShapeModelParameter>, IHandleDataSlots
     {
         public ClearShapeModelHandle(IDialogService dialogService) : base(dialogService)

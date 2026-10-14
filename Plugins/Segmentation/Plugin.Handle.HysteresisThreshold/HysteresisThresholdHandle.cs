@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.HysteresisThreshold
 {
-    [Handle("滞后阈值分割", "HysteresisThreshold", "通过高低双阈值连接弱边缘的滞后阈值分割算子。", Common.HandleType_Segmentation)]
+    [Handle("滞后阈值分割", "HysteresisThreshold", "通过高低双阈值连接弱边缘的滞后阈值分割算子。", Common.HandleType_Segmentation, OperatorBackend = OperatorBackend.OpenCV)]
     public class HysteresisThresholdHandle : ParameterHandleBase<HysteresisThresholdParameter>, IHandleDataSlots
     {
         public HysteresisThresholdHandle(IDialogService dialogService) : base(dialogService) { }

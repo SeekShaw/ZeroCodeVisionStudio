@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using Microsoft.Win32;
 
 namespace Plugin.Handle.CreateShapeModel.ViewModels

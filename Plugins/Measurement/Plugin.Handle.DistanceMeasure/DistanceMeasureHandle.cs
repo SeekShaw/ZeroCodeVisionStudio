@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using Plugin.Handle.DistanceMeasure.Views;
 
 namespace Plugin.Handle.DistanceMeasure
@@ -59,7 +59,7 @@ namespace Plugin.Handle.DistanceMeasure
     /// <summary>
     /// 点到点距离测量算子。
     /// </summary>
-    [Handle("点到点距离", "DistancePP", "测量两个点之间的欧几里得距离，支持物理标定换算与专业标注叠加。", Common.HandleType_Measurement)]
+    [Handle("点到点距离", "DistancePP", "测量两个点之间的欧几里得距离，支持物理标定换算与专业标注叠加。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class DistancePPHandle : DistanceMeasureBase
     {
         public DistancePPHandle(IDialogService dialogService) : base(dialogService)
@@ -133,7 +133,7 @@ namespace Plugin.Handle.DistanceMeasure
     /// <summary>
     /// 点到线距离测量算子。
     /// </summary>
-    [Handle("点到线距离", "DistancePL", "测量点到基准直线的垂直距离，支持标定换算与专业标注叠加。", Common.HandleType_Measurement)]
+    [Handle("点到线距离", "DistancePL", "测量点到基准直线的垂直距离，支持标定换算与专业标注叠加。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class DistancePLHandle : DistanceMeasureBase
     {
         public DistancePLHandle(IDialogService dialogService) : base(dialogService)
@@ -203,7 +203,7 @@ namespace Plugin.Handle.DistanceMeasure
     /// <summary>
     /// 轮廓距离测量算子。
     /// </summary>
-    [Handle("轮廓距离", "DistanceContours", "测量两个轮廓之间的距离，支持标定换算。", Common.HandleType_Measurement)]
+    [Handle("轮廓距离", "DistanceContours", "测量两个轮廓之间的距离，支持标定换算。", Common.HandleType_Measurement, OperatorBackend = OperatorBackend.Halcon)]
     public class DistanceContoursHandle : ParameterHandleBase<DistanceContoursParameter>, IHandleDataSlots
     {
         public DistanceContoursHandle(IDialogService dialogService) : base(dialogService)

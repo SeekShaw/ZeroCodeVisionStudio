@@ -1,9 +1,9 @@
-using HalconVisionStudio.Shared;
+﻿using ZeroCodeVisionStudio.Shared;
 using HalconDotNet;
 
 namespace Plugin.Handle.GenRectangle1
 {
-    [Handle("生成矩形1", "GenRectangle1", "根据左上角和右下角坐标生成平行于坐标轴的矩形区域。支持交互式绘制。", Common.HandleType_Geometry)]
+    [Handle("生成矩形1", "GenRectangle1", "根据左上角和右下角坐标生成平行于坐标轴的矩形区域。支持交互式绘制。", Common.HandleType_Geometry, OperatorBackend = OperatorBackend.OpenCV)]
     public class GenRectangle1Handle : ParameterHandleBase<GenRectangle1Parameter>
     {
         public GenRectangle1Handle(IDialogService dialogService) : base(dialogService) { }

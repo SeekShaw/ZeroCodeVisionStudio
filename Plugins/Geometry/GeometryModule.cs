@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using HalconVisionStudio.Core;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Core;
+using ZeroCodeVisionStudio.Shared;
 using Prism.Ioc;
 using Prism.Modularity;
 

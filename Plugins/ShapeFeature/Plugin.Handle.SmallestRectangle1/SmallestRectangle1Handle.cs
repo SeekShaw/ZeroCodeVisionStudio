@@ -1,10 +1,10 @@
 ﻿using System;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.SmallestRectangle1
 {
-    [Handle("最小外接矩形", "SmallestRectangle1", "求解区域的水平最小外接矩形并输出矩形区域，支持尺寸标定换算。", Common.HandleType_ShapeFeature)]
+    [Handle("最小外接矩形", "SmallestRectangle1", "求解区域的水平最小外接矩形并输出矩形区域，支持尺寸标定换算。", Common.HandleType_ShapeFeature, OperatorBackend = OperatorBackend.OpenCV)]
     public class SmallestRectangle1Handle : ParameterHandleBase<FeatureMeasureParameter>, IHandleDataSlots
     {
         public SmallestRectangle1Handle(IDialogService dialogService) : base(dialogService)

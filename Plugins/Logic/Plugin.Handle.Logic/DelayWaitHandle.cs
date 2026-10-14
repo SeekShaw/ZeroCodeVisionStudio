@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Threading;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Logic
 {
@@ -53,7 +53,7 @@ namespace Plugin.Handle.Logic
     /// 延时等待：固定毫秒延时 + 可选轮询等待流程变量为真（带超时）。
     /// 只做节拍等待，不做硬实时控制——时序联锁是 PLC 的职责。
     /// </summary>
-    [Handle("延时等待", "DelayWait", "流程中途延时固定毫秒，或轮询等待流程变量（变量存取写入）变为真，带超时与超时动作。用于等执行机构到位、等通讯流程就绪等节拍配合。", Common.HandleType_Logic)]
+    [Handle("延时等待", "DelayWait", "流程中途延时固定毫秒，或轮询等待流程变量（变量存取写入）变为真，带超时与超时动作。用于等执行机构到位、等通讯流程就绪等节拍配合。", Common.HandleType_Logic, OperatorBackend = OperatorBackend.Hybrid)]
     public class DelayWaitHandle : ParameterHandleBase<DelayWaitParameter>, IHandleDataSlots
     {
         public DelayWaitHandle(IDialogService dialogService) : base(dialogService)

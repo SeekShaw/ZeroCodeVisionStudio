@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>ZeroCodeVisionStudio.AI</RootNamespace>
+    <AssemblyName>ZeroCodeVisionStudio.AI</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Prism.Core" Version="9.0.537" />
+    <!-- System.Security.Cryptography.ProtectedData（DPAPI）在 net10.0-windows 中由框架自带提供，无需显式引用 -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ZeroCodeVisionStudio.Shared\ZeroCodeVisionStudio.Shared.csproj" />
+    <ProjectReference Include="..\ZeroCodeVisionStudio.Core\ZeroCodeVisionStudio.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="halcondotnet">
+      <HintPath>..\libs\halcondotnet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

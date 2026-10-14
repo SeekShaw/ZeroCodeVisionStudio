@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Logic
 {
@@ -51,7 +51,7 @@ namespace Plugin.Handle.Logic
     /// <summary>
     /// 变量写入：把上游输出（或固定值）写入全局流程变量，供其它节点/其它流程/后续执行轮次读取。
     /// </summary>
-    [Handle("变量写入", "VariableSet", "写入全局流程变量（值支持 $Key$ 上游插值）。跨节点/跨流程/跨执行周期共享数据：标定系数、工件类型、通讯握手标记等。", Common.HandleType_Logic)]
+    [Handle("变量写入", "VariableSet", "写入全局流程变量（值支持 $Key$ 上游插值）。跨节点/跨流程/跨执行周期共享数据：标定系数、工件类型、通讯握手标记等。", Common.HandleType_Logic, OperatorBackend = OperatorBackend.Hybrid)]
     public class VariableSetHandle : ParameterHandleBase<VariableSetParameter>, IHandleDataSlots
     {
         public VariableSetHandle(IDialogService dialogService) : base(dialogService)
@@ -131,7 +131,7 @@ namespace Plugin.Handle.Logic
     /// 变量读取：读取全局流程变量，输出文本/数值/布尔三种形态；变量不存在时使用缺省值。
     /// 配合节点执行条件（如 `$VariableValueBool$ == true`）可实现模式切换/流程门控。
     /// </summary>
-    [Handle("变量读取", "VariableGet", "读取全局流程变量，输出文本/数值/布尔三形态（不存在用缺省值）。与变量写入、节点执行条件配合实现模式切换与流程门控。", Common.HandleType_Logic)]
+    [Handle("变量读取", "VariableGet", "读取全局流程变量，输出文本/数值/布尔三形态（不存在用缺省值）。与变量写入、节点执行条件配合实现模式切换与流程门控。", Common.HandleType_Logic, OperatorBackend = OperatorBackend.Hybrid)]
     public class VariableGetHandle : ParameterHandleBase<VariableGetParameter>, IHandleDataSlots
     {
         public VariableGetHandle(IDialogService dialogService) : base(dialogService)

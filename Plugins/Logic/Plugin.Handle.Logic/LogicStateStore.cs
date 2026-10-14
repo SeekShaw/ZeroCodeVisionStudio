@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Logic
 {
@@ -20,7 +20,7 @@ namespace Plugin.Handle.Logic
     internal static class LogicInput
     {
         /// <summary>读取布尔输入：优先显式绑定输入，其次共享上游输出；未绑定返回 null。</summary>
-        public static bool? ReadBool(HalconVisionStudio.Shared.RunParameter parameter, string key)
+        public static bool? ReadBool(ZeroCodeVisionStudio.Shared.RunParameter parameter, string key)
         {
             if (parameter == null) return null;
 
@@ -32,7 +32,7 @@ namespace Plugin.Handle.Logic
         }
 
         /// <summary>读取通用输入（同上顺序），返回原始对象。</summary>
-        public static object ReadObject(HalconVisionStudio.Shared.RunParameter parameter, string key)
+        public static object ReadObject(ZeroCodeVisionStudio.Shared.RunParameter parameter, string key)
         {
             if (parameter == null) return null;
             if (parameter.TryGetInput<object>(key, out var bound) && bound != null) return bound;

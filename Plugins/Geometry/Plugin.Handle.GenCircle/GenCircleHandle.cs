@@ -1,9 +1,9 @@
-using HalconVisionStudio.Shared;
+﻿using ZeroCodeVisionStudio.Shared;
 using HalconDotNet;
 
 namespace Plugin.Handle.GenCircle
 {
-    [Handle("生成圆", "GenCircle", "根据圆心坐标和半径生成圆形区域。支持交互式绘制。", Common.HandleType_Geometry)]
+    [Handle("生成圆", "GenCircle", "根据圆心坐标和半径生成圆形区域。支持交互式绘制。", Common.HandleType_Geometry, OperatorBackend = OperatorBackend.OpenCV)]
     public class GenCircleHandle : ParameterHandleBase<GenCircleParameter>
     {
         public GenCircleHandle(IDialogService dialogService) : base(dialogService) { }

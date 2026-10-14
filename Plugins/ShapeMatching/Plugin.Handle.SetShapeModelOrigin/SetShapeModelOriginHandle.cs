@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.SetShapeModelOrigin
 {
-    [Handle("设置模板原点", "SetShapeModelOrigin", "设置形状模板匹配返回坐标所使用的原点。", Common.HandleType_ShapeMatching)]
+    [Handle("设置模板原点", "SetShapeModelOrigin", "设置形状模板匹配返回坐标所使用的原点。", Common.HandleType_ShapeMatching, OperatorBackend = OperatorBackend.Halcon)]
     public class SetShapeModelOriginHandle : ParameterHandleBase<SetShapeModelOriginParameter>, IHandleDataSlots
     {
         public SetShapeModelOriginHandle(IDialogService dialogService) : base(dialogService)

@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using Plugin.Handle.Morphology.Views;
 
 namespace Plugin.Handle.Morphology
 {
-    [Handle("形态学处理", "Morphology", "使用圆形结构元素清理缺陷区域。", Common.HandleType_RegionProcessing)]
+    [Handle("形态学处理", "Morphology", "使用圆形结构元素清理缺陷区域。", Common.HandleType_RegionProcessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class MorphologyHandle : HandleBase, IHandleDataSlots
     {
         private readonly MorphologyParameter parameter;

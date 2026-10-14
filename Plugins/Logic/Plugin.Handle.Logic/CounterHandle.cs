@@ -1,5 +1,5 @@
-using System.ComponentModel;
-using HalconVisionStudio.Shared;
+﻿using System.ComponentModel;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.Logic
 {
@@ -38,7 +38,7 @@ namespace Plugin.Handle.Logic
     /// 支持累计 / 命中 / 连续命中三种模式与取模输出，配合节点执行条件实现
     /// "连续 3 件 NG 停机"“每 5 件抽检 1 件”等产线联锁。
     /// </summary>
-    [Handle("计数器", "Counter", "跨执行周期计数：累计/命中/连续命中三种模式，支持取模输出与复位输入。用于产量统计、连续 NG 报警、每 N 件抽检等联锁。", Common.HandleType_Logic)]
+    [Handle("计数器", "Counter", "跨执行周期计数：累计/命中/连续命中三种模式，支持取模输出与复位输入。用于产量统计、连续 NG 报警、每 N 件抽检等联锁。", Common.HandleType_Logic, OperatorBackend = OperatorBackend.Hybrid)]
     public class CounterHandle : ParameterHandleBase<CounterParameter>, IHandleDataSlots
     {
         private const string CountInputKey = "logic.counter.input";

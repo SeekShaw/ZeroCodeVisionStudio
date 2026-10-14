@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.ContourFeatures
 {
@@ -59,7 +59,7 @@ namespace Plugin.Handle.ContourFeatures
     /// <summary>
     /// 轮廓长度测量。
     /// </summary>
-    [Handle("轮廓长度", "LengthXld", "计算XLD轮廓的总长度，支持标定换算。", "轮廓处理")]
+    [Handle("轮廓长度", "LengthXld", "计算XLD轮廓的总长度，支持标定换算。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class LengthXldHandle : ContourFeatureBase
     {
         public LengthXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -80,7 +80,7 @@ namespace Plugin.Handle.ContourFeatures
     /// <summary>
     /// 轮廓面积测量。
     /// </summary>
-    [Handle("轮廓面积", "AreaCenterXld", "计算XLD轮廓围成的面积和重心，支持标定换算。", "轮廓处理")]
+    [Handle("轮廓面积", "AreaCenterXld", "计算XLD轮廓围成的面积和重心，支持标定换算。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class AreaCenterXldHandle : ContourFeatureBase
     {
         public AreaCenterXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -103,7 +103,7 @@ namespace Plugin.Handle.ContourFeatures
     /// <summary>
     /// 轮廓方向测量。
     /// </summary>
-    [Handle("轮廓方向", "OrientationXld", "计算XLD轮廓的主轴方向。", "轮廓处理")]
+    [Handle("轮廓方向", "OrientationXld", "计算XLD轮廓的主轴方向。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class OrientationXldHandle : ContourFeatureBase
     {
         public OrientationXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -120,7 +120,7 @@ namespace Plugin.Handle.ContourFeatures
     /// <summary>
     /// 轮廓圆度测量。
     /// </summary>
-    [Handle("轮廓圆度", "CircularityXld", "计算XLD轮廓的圆度。", "轮廓处理")]
+    [Handle("轮廓圆度", "CircularityXld", "计算XLD轮廓的圆度。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class CircularityXldHandle : ContourFeatureBase
     {
         public CircularityXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -136,7 +136,7 @@ namespace Plugin.Handle.ContourFeatures
     /// <summary>
     /// 轮廓紧凑度测量。
     /// </summary>
-    [Handle("轮廓紧凑度", "CompactnessXld", "计算XLD轮廓的紧凑度。", "轮廓处理")]
+    [Handle("轮廓紧凑度", "CompactnessXld", "计算XLD轮廓的紧凑度。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class CompactnessXldHandle : ContourFeatureBase
     {
         public CompactnessXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -152,7 +152,7 @@ namespace Plugin.Handle.ContourFeatures
     /// <summary>
     /// 轮廓凸性测量。
     /// </summary>
-    [Handle("轮廓凸性", "ConvexityXld", "计算XLD轮廓的凸性。", "轮廓处理")]
+    [Handle("轮廓凸性", "ConvexityXld", "计算XLD轮廓的凸性。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class ConvexityXldHandle : ContourFeatureBase
     {
         public ConvexityXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -168,7 +168,7 @@ namespace Plugin.Handle.ContourFeatures
     /// <summary>
     /// 轮廓偏心率测量。
     /// </summary>
-    [Handle("轮廓偏心率", "EccentricityXld", "计算XLD轮廓的偏心率。", "轮廓处理")]
+    [Handle("轮廓偏心率", "EccentricityXld", "计算XLD轮廓的偏心率。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class EccentricityXldHandle : ContourFeatureBase
     {
         public EccentricityXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -185,7 +185,7 @@ namespace Plugin.Handle.ContourFeatures
     /// <summary>
     /// 轮廓最小外接圆。
     /// </summary>
-    [Handle("轮廓最小外接圆", "SmallestCircleXld", "计算XLD轮廓的最小外接圆，支持标定换算。", "轮廓处理")]
+    [Handle("轮廓最小外接圆", "SmallestCircleXld", "计算XLD轮廓的最小外接圆，支持标定换算。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class SmallestCircleXldHandle : ContourFeatureBase
     {
         public SmallestCircleXldHandle(IDialogService dialogService) : base(dialogService) { }
@@ -207,7 +207,7 @@ namespace Plugin.Handle.ContourFeatures
     /// <summary>
     /// 轮廓最小外接矩形。
     /// </summary>
-    [Handle("轮廓最小外接矩形", "SmallestRectangle2Xld", "计算XLD轮廓的最小外接矩形，支持标定换算。", "轮廓处理")]
+    [Handle("轮廓最小外接矩形", "SmallestRectangle2Xld", "计算XLD轮廓的最小外接矩形，支持标定换算。", "轮廓处理", OperatorBackend = OperatorBackend.Halcon)]
     public class SmallestRectangle2XldHandle : ContourFeatureBase
     {
         public SmallestRectangle2XldHandle(IDialogService dialogService) : base(dialogService) { }

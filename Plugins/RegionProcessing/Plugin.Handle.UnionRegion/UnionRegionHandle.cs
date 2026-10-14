@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HalconDotNet;
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.UnionRegion
 {
-    [Handle("区域合并", "UnionRegion", "将所有选中区域合并为一个区域。", Common.HandleType_RegionProcessing)]
+    [Handle("区域合并", "UnionRegion", "将所有选中区域合并为一个区域。", Common.HandleType_RegionProcessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class UnionRegionHandle : HandleBase, IHandleDataSlots
     {
         public UnionRegionHandle(IDialogService dialogService) : base(dialogService)

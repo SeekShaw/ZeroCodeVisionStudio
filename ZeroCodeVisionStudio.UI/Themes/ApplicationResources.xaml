@@ -1,0 +1,30 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:ZeroCodeVisionStudio.UI.Converters">
+
+    <ResourceDictionary.MergedDictionaries>
+        <!-- Theme Semantic Color Tokens -->
+            <!-- Control Styles -->
+        <ResourceDictionary Source="/ZeroCodeVisionStudio.UI;component/Themes/Icons.xaml" />
+        <ResourceDictionary Source="/ZeroCodeVisionStudio.UI;component/Themes/ControlStyles.xaml" />
+        <!-- Shell Styles -->
+        <ResourceDictionary Source="/ZeroCodeVisionStudio.UI;component/Themes/ShellStyles.xaml" />
+        <ResourceDictionary Source="/ZeroCodeVisionStudio.UI;component/Themes/CommandBarStyles.xaml" />
+        <!-- Hal Operate Window Style -->
+        <ResourceDictionary Source="/ZeroCodeVisionStudio.UI;component/Themes/HalOperateWindow.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- Converters -->
+    <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+    <!-- Icon / Button semantic color tokens（StaticResource 安全，用 Color 属性避免 Brush.Parse 崩溃）  -->
+    <SolidColorBrush x:Key="RunGreenBrush" Color="#10B981" />
+    <SolidColorBrush x:Key="RunGreenHoverBrush" Color="#059669" />
+    <SolidColorBrush x:Key="StopRedBrush" Color="#EF4444" />
+    <SolidColorBrush x:Key="StopRedHoverBrush" Color="#DC2626" />
+    <SolidColorBrush x:Key="ContinuousBlueBrush" Color="#3B82F6" />
+    <SolidColorBrush x:Key="IconWhiteBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="IconDarkBrush" Color="#000000" />
+</ResourceDictionary>

@@ -1,10 +1,10 @@
-using HalconVisionStudio.Shared;
+using ZeroCodeVisionStudio.Shared;
 using HalconDotNet;
 using Plugin.Handle.ReduceDomain.Views;
 
 namespace Plugin.Handle.ReduceDomain
 {
-    [Handle("裁剪图像域", "ReduceDomain", "按照输入区域 ROI 限定图像处理域，对应 HALCON: reduce_domain(Image, Region, ImageReduced)。", Common.HandleType_Preprocessing)]
+    [Handle("裁剪图像域", "ReduceDomain", "按照输入区域 ROI 限定图像处理域，对应 HALCON: reduce_domain(Image, Region, ImageReduced)。", Common.HandleType_Preprocessing, OperatorBackend = OperatorBackend.OpenCV)]
     public class ReduceDomainHandle : HandleBase, IHandleDataSlots
     {
         private readonly ReduceDomainParameter parameter;

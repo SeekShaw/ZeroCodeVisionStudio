@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <UseWPF>false</UseWPF>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="OpenCvSharp4" Version="4.10.0.20240616" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.10.0.20240616" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ZeroCodeVisionStudio.Shared\ZeroCodeVisionStudio.Shared.csproj" />
+    <ProjectReference Include="..\..\Plugins\Geometry\Plugin.Handle.Geometry.csproj" />
+    <ProjectReference Include="..\..\Plugins\Segmentation\Plugin.Handle.Segmentation.csproj" />
+    <ProjectReference Include="..\..\Plugins\Preprocessing\Plugin.Handle.Preprocessing.csproj" />
+    <ProjectReference Include="..\..\Plugins\RegionProcessing\Plugin.Handle.RegionProcessing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="halcondotnet">
+      <HintPath>..\..\libs\halcondotnet.dll</HintPath>
+      <Private>true</Private>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Reference>
+  </ItemGroup>
+</Project>

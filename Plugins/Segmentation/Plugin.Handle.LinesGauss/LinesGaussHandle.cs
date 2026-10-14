@@ -1,9 +1,9 @@
-using HalconDotNet;
-using HalconVisionStudio.Shared;
+﻿using HalconDotNet;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.LinesGauss
 {
-    [Handle("高斯线条检测", "LinesGauss", "使用高斯滤波器提取图像中的线条 XLD 轮廓。", Common.HandleType_Segmentation)]
+    [Handle("高斯线条检测", "LinesGauss", "使用高斯滤波器提取图像中的线条 XLD 轮廓。", Common.HandleType_Segmentation, OperatorBackend = OperatorBackend.Halcon)]
     public class LinesGaussHandle : ParameterHandleBase<LinesGaussParameter>, IHandleDataSlots
     {
         public LinesGaussHandle(IDialogService dialogService) : base(dialogService) { }

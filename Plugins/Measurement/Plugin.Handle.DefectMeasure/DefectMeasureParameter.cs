@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using HalconVisionStudio.Shared;
+using System.ComponentModel;
+using ZeroCodeVisionStudio.Shared;
 
 namespace Plugin.Handle.DefectMeasure
 {
