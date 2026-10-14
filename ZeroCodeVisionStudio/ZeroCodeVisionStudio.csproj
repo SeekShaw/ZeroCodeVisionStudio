@@ -15,6 +15,19 @@
     <RootNamespace>ZeroCodeVisionStudio</RootNamespace>
     <ApplicationIcon>app.ico</ApplicationIcon>
     <WindowsIcon>app.ico</WindowsIcon>
+    <!-- Win32 EXE 版本资源（全部从这里统一，界面通过 AppVersion 反射读取）
+         FileVersion / AssemblyVersion 必须 4 段数字（Win32 VERSIONINFO 硬限制）；
+         InformationalVersion = ProductVersion 可自由写，但也用 4 段保持界面和 EXE 属性窗口完全一致。 -->
+    <Version>2.1.1</Version>
+    <FileVersion>2.1.1.0</FileVersion>
+    <AssemblyVersion>2.1.1.0</AssemblyVersion>
+    <InformationalVersion>2.1.1.0</InformationalVersion>
+    <Company>SeekShaw</Company>
+    <Product>ZeroCode Vision Studio</Product>
+    <FileDescription>智能型工业机器视觉自动化检测平台</FileDescription>
+    <Copyright>Copyright © SeekShaw 2026</Copyright>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup>

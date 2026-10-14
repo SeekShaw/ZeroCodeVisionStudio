@@ -7,6 +7,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>ZeroCodeVisionStudio.Shared</AssemblyName>
     <RootNamespace>ZeroCodeVisionStudio.Shared</RootNamespace>
+    <!-- 同步主 EXE 的版本号，保持一致 -->
+    <Version>2.1.1</Version>
+    <FileVersion>2.1.1.0</FileVersion>
+    <AssemblyVersion>2.1.1.0</AssemblyVersion>
+    <InformationalVersion>2.1.1.0</InformationalVersion>
+    <Company>SeekShaw</Company>
+    <Product>ZeroCode Vision Studio</Product>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup>

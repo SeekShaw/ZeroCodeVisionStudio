@@ -2,6 +2,7 @@
     x:Class="ZeroCodeVisionStudio.Views.Components.MainMenuBar"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:av="clr-namespace:ZeroCodeVisionStudio.Shared;assembly=ZeroCodeVisionStudio.Shared"
     Focusable="False">
 
     <UserControl.Resources>
@@ -110,7 +111,7 @@
                 <Border Margin="6,0,0,0" Padding="4,1" CornerRadius="4"
                         Background="{DynamicResource Theme.Vision.Panel.HeaderBackground}"
                         VerticalAlignment="Center">
-                    <TextBlock Text="v2.1 PRO" FontSize="9" FontWeight="SemiBold"
+                    <TextBlock Text="{x:Static av:AppVersion.Display}" FontSize="9" FontWeight="SemiBold"
                                Foreground="{DynamicResource MahApps.Brushes.Accent}"
                                VerticalAlignment="Center"/>
                 </Border>

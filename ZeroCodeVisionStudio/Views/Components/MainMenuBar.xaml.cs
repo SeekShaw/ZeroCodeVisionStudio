@@ -1,5 +1,6 @@
 using System.Windows.Controls;
 using ZeroCodeVisionStudio;
+using ZeroCodeVisionStudio.Shared;
 using ZeroCodeVisionStudio.Views.Communication;
 using ZeroCodeVisionStudio.Views.Logic;
 
@@ -123,14 +124,15 @@ public partial class MainMenuBar : UserControl
     /// <summary>打开关于对话框。</summary>
     private void OnOpenAboutDialog(object sender, System.Windows.RoutedEventArgs e)
     {
-        var msg = "ZeroCode Vision Studio v2.1 Professional\n\n" +
+        var msg = $"{AppVersion.ProductName} {AppVersion.Display}\n\n" +
                   "工业机器视觉低代码集成与智能分析平台\n" +
-                  "• 核心架构：WPF + .NET 10.0 + MVVM\n" +
+                  "• 核心架构：WPF + .NET 10 + MVVM\n" +
                   "• 视觉算子：Halcon + OpenCV 算子双引擎 & 插件化管理\n" +
                   "• 智能协同：Vision Copilot (OpenAI / DeepSeek / GLM / MCP Server)\n" +
-                  "• 工业通讯：PLC (S7 / Modbus / MC) · 串口 · TCP/UDP\n\n" +
-                  "Copyright © 2026 ZeroCode. All rights reserved.";
-        System.Windows.MessageBox.Show(msg, "关于 - ZeroCode Vision Studio", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                  "• 工业通讯：PLC (S7 / Modbus / MC) · 串口 · TCP/UDP\n" +
+                  $"• 完整版本：{AppVersion.ProductVersion}\n\n" +
+                  $"{AppVersion.Copyright}";
+        System.Windows.MessageBox.Show(msg, $"关于 - {AppVersion.ProductName}", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
     }
 
 }
